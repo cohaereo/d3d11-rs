@@ -6,7 +6,7 @@ authors = ["cohaereo <cohae@cohae.dev>"]
 description = "Safe(r) bindings to the D3D11 API"
 homepage = "https://github.com/cohaereo/d3d11-rs"
 repository = "https://github.com/cohaereo/d3d11-rs"
-license = "MIT"
+license = "MIT/Apache-2.0"
 readme = "README.md"
 categories = [
     "api-bindings",
