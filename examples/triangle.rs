@@ -2,7 +2,6 @@ use anyhow::Context;
 use d3d11::dxgi::*;
 use d3d11::*;
 use glfw::{Action, Context as _, Key};
-use windows::Win32::Foundation::HWND;
 
 const SHADER_SRC: &str = r#"
 struct VSOutput {
@@ -47,7 +46,7 @@ fn main() -> anyhow::Result<()> {
     let hwnd = HWND(window.get_win32_window());
 
     let device = Device::create(None).context("Failed to create device")?;
-    let context = device.immediate_context();
+    let ictx = device.get_immediate_context();
 
     let swapchain = SwapChain::create(
         &device,
@@ -68,7 +67,7 @@ fn main() -> anyhow::Result<()> {
     )
     .context("Failed to create swapchain")?;
 
-    let vs_data = d3d11::shader::compile(
+    let vs_data = d3d11::shader::fxc_compile(
         SHADER_SRC.as_bytes(),
         Some("triangle_vs"),
         &[],
@@ -76,7 +75,7 @@ fn main() -> anyhow::Result<()> {
         ShaderTarget::Vertex,
     )?;
 
-    let ps_data = d3d11::shader::compile(
+    let ps_data = d3d11::shader::fxc_compile(
         SHADER_SRC.as_bytes(),
         Some("triangle_ps"),
         &[],
@@ -93,26 +92,26 @@ fn main() -> anyhow::Result<()> {
 
     let rtv = device.create_render_target_view(&target, None)?;
 
+    let dctx = device.create_deferred_context()?;
+
     while !window.should_close() {
         glfw.poll_events();
         for (_, event) in glfw::flush_messages(&events) {
-            match event {
-                glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
-                    window.set_should_close(true)
-                }
-                _ => {}
+            if let glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) = event {
+                window.set_should_close(true)
             }
         }
 
-        context.clear_render_target_view(&rtv, &[0.0, 0.0, 0.0, 1.0]);
-        context.output_merger_set_render_targets(&[Some(rtv.clone())], None);
-        context
-            .rasterizer_set_viewports(&[Viewport::builder().width(1024.0).height(1024.0).build()]);
+        dctx.clear_render_target_view(&rtv, &[0.0, 0.0, 0.0, 1.0]);
+        dctx.output_merger_set_render_targets(&[Some(rtv.clone())], None);
+        dctx.rasterizer_set_viewports(&[Viewport::builder().width(1024.0).height(1024.0).build()]);
 
-        context.vertex_set_shader(Some(&vs));
-        context.pixel_set_shader(Some(&ps));
-        context.input_assembler_set_primitive_topology(PrimitiveTopology::TriangleList);
-        context.draw(3, 0);
+        dctx.vertex_set_shader(Some(&vs));
+        dctx.pixel_set_shader(Some(&ps));
+        dctx.input_assembler_set_primitive_topology(PrimitiveTopology::TriangleList);
+        dctx.draw(3, 0);
+
+        ictx.execute_command_list(&dctx.finish_command_list(false)?, false);
 
         swapchain.present(0, PresentFlags::empty());
     }

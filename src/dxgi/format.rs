@@ -1,4 +1,4 @@
-use windows::Win32::Graphics::Dxgi::Common::*;
+use d3d11_sys::Dxgi::Common::*;
 
 #[repr(i32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -192,6 +192,17 @@ impl Format {
         self.format_type() == Some(FormatType::Snorm)
     }
 
+    pub fn is_depth(&self) -> bool {
+        matches!(
+            self,
+            Format::D16Unorm
+                | Format::D24UnormS8Uint
+                | Format::D32Float
+                | Format::D32FloatS8x24Uint
+                | Format::R32g8x24Typeless
+        )
+    }
+
     pub fn format_type(&self) -> Option<FormatType> {
         match self {
             Format::Bc4Snorm
@@ -321,7 +332,7 @@ impl Format {
             | Format::Y216
             | Format::Y410
             | Format::Y416
-            | Format::Yuy2 => return None,
+            | Format::Yuy2 => None,
         }
     }
 }
@@ -329,6 +340,19 @@ impl Format {
 impl From<Format> for DXGI_FORMAT {
     fn from(format: Format) -> Self {
         Self(format as i32)
+    }
+}
+
+// Use a checked transmute for this
+impl TryFrom<u32> for Format {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        if value >= DXGI_FORMAT_UNKNOWN.0 as u32 && value <= DXGI_FORMAT_YUY2.0 as u32 {
+            Ok(unsafe { std::mem::transmute(value) })
+        } else {
+            Err(())
+        }
     }
 }
 

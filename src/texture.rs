@@ -1,7 +1,7 @@
 use std::mem::transmute;
 
 use bon::Builder;
-use windows::Win32::Graphics::Direct3D11::*;
+use d3d11_sys::Direct3D11::*;
 
 use crate::{
     dxgi, impl_device_child, impl_resource,
@@ -77,6 +77,7 @@ pub struct Texture2dDesc {
     pub width: u32,
     pub height: u32,
     pub mip_levels: u32,
+    #[builder(default = 1)]
     pub array_size: u32,
     pub format: dxgi::Format,
     #[builder(default)]
@@ -90,6 +91,12 @@ pub struct Texture2dDesc {
     pub misc_flags: ResourceMiscFlags,
 }
 verify_ffi_struct!(Texture2dDesc, D3D11_TEXTURE2D_DESC);
+
+impl Texture2dDesc {
+    pub fn resolution(&self) -> (u32, u32) {
+        (self.width, self.height)
+    }
+}
 
 #[repr(C)]
 #[derive(Builder, Clone, Debug)]

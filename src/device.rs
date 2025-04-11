@@ -1,7 +1,5 @@
-use windows::Win32::{
-    Foundation::HINSTANCE,
-    Graphics::{Direct3D::*, Direct3D11::*, Dxgi::IDXGIAdapter},
-};
+use bitflags::bitflags;
+use d3d11_sys::{Direct3D::*, Direct3D11::*, Dxgi::IDXGIAdapter, Foundation::HMODULE};
 
 use crate::{
     blend_state::{BlendDesc, BlendState},
@@ -17,17 +15,19 @@ use crate::{
     shader::*,
     srv::{ShaderResourceView, ShaderResourceViewDesc},
     texture::{Texture1D, Texture1dDesc, Texture2D, Texture2dDesc, Texture3D, Texture3dDesc},
-    util::{to_pcstr, wrap_option_out_result},
+    uav::{UnorderedAccessView, UnorderedAccessViewDesc},
+    util::{to_pcstr, wrap_option_out_result, OptionalParam},
     Buffer, BufferDesc, DepthStencilView, DepthStencilViewDesc, Query, Resource,
 };
 
 // TODO(cohae): How do we handle newer versions of the API? eg. ID3D11Device1
 #[repr(transparent)]
+#[derive(Clone)]
 pub struct Device(pub(crate) ID3D11Device);
 
 // Initialization
 impl Device {
-    /// Temporary method for creating a device
+    /// Temporary method for creating a device.
     /// ImmediateContext can be retrieved by calling `device.immediate_context()`
     // TODO:  Abstract away IDXGIAdapter -> dxgi::Adapter
     pub fn create(adapter: Option<IDXGIAdapter>) -> crate::Result<Self> {
@@ -40,11 +40,11 @@ impl Device {
 
         unsafe {
             D3D11CreateDevice(
-                adapter.map(|a| a.into()).as_ref(),
+                adapter.as_ref(),
                 driver_type,
-                HINSTANCE::default(),
-                // Default::default(),
-                D3D11_CREATE_DEVICE_DEBUG,
+                HMODULE::default(),
+                Default::default(),
+                // D3D11_CREATE_DEVICE_DEBUG,
                 Some(&[D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0]),
                 D3D11_SDK_VERSION,
                 Some(&mut device),
@@ -70,10 +70,16 @@ macro_rules! generate_create_shader_method {
 
 // Methods
 impl Device {
-    pub fn immediate_context(&self) -> DeviceContext {
+    pub fn get_immediate_context(&self) -> DeviceContext {
         DeviceContext(
             unsafe { self.0.GetImmediateContext() }.expect("Failed to get immediate context"),
         )
+    }
+
+    pub fn create_deferred_context(&self) -> crate::Result<DeviceContext> {
+        let inner = wrap_option_out_result(|out| unsafe { self.0.CreateDeferredContext(0, out) })?;
+
+        Ok(DeviceContext(inner))
     }
 
     pub fn create_sampler_state(&self, desc: &SamplerDesc) -> crate::Result<SamplerState> {
@@ -92,6 +98,7 @@ impl Device {
             !(initial_data.is_none() & desc.usage.is_immutable()),
             "Initial data must be provided for immutable buffers"
         );
+        validate_input!(desc.byte_width > 0, "Buffer size must be greater than zero");
 
         let initial_data = initial_data.map(|d| D3D11_SUBRESOURCE_DATA {
             pSysMem: d.as_ptr() as _,
@@ -134,7 +141,7 @@ impl Device {
         // TODO: Provide a safer, more ergonomic way to pass initial data
         initial_data: Option<&[D3D11_SUBRESOURCE_DATA]>,
     ) -> crate::Result<Texture1D> {
-        if let Some(ref id) = initial_data {
+        if let Some(id) = initial_data {
             Self::validate_texture_desc(desc.format, id.len(), desc.mip_levels, 1)?;
         } else {
             validate_input!(
@@ -157,7 +164,7 @@ impl Device {
         // TODO: Provide a safer, more ergonomic way to pass initial data
         initial_data: Option<&[D3D11_SUBRESOURCE_DATA]>,
     ) -> crate::Result<Texture2D> {
-        if let Some(ref id) = initial_data {
+        if let Some(id) = initial_data {
             Self::validate_texture_desc(desc.format, id.len(), desc.mip_levels, desc.array_size)?;
         } else {
             validate_input!(
@@ -180,7 +187,7 @@ impl Device {
         // TODO: Provide a safer, more ergonomic way to pass initial data
         initial_data: Option<&[D3D11_SUBRESOURCE_DATA]>,
     ) -> crate::Result<Texture3D> {
-        if let Some(ref id) = initial_data {
+        if let Some(id) = initial_data {
             Self::validate_texture_desc(desc.format, id.len(), desc.mip_levels, 1)?;
         } else {
             validate_input!(
@@ -212,7 +219,7 @@ impl Device {
         resource: &impl Resource,
         desc: Option<&RenderTargetViewDesc>,
     ) -> crate::Result<RenderTargetView> {
-        if let Some(ref desc) = desc {
+        if let Some(desc) = desc {
             validate_input!(!desc.format.is_typeless(), "Format must not be typeless");
         }
 
@@ -246,17 +253,40 @@ impl Device {
     pub fn create_shader_resource_view(
         &self,
         resource: &impl Resource,
-        desc: Option<&ShaderResourceViewDesc>,
+        desc: impl OptionalParam<Output = ShaderResourceViewDesc>,
     ) -> crate::Result<ShaderResourceView> {
+        if let Some(desc) = desc.as_option() {
+            validate_input!(
+                !desc.format.is_typeless(),
+                "SRV format must not be typeless"
+            );
+        }
+
         let inner = wrap_option_out_result(|out| unsafe {
             self.0.CreateShaderResourceView(
                 &resource.to_ffi_resource(),
-                desc.map(|d| d.as_ffi()),
+                desc.as_option().map(|d| d.as_ffi()),
                 out,
             )
         })?;
 
         Ok(ShaderResourceView(inner))
+    }
+
+    pub fn create_unordered_access_view(
+        &self,
+        resource: &impl Resource,
+        desc: impl OptionalParam<Output = UnorderedAccessViewDesc>,
+    ) -> crate::Result<UnorderedAccessView> {
+        let inner = wrap_option_out_result(|out| unsafe {
+            self.0.CreateUnorderedAccessView(
+                &resource.to_ffi_resource(),
+                desc.as_option().map(|d| d.as_ffi()),
+                out,
+            )
+        })?;
+
+        Ok(UnorderedAccessView(inner))
     }
 
     pub fn create_input_layout(
@@ -267,7 +297,7 @@ impl Device {
         let mut strings = vec![];
         let mut descs_ffi = vec![];
         for d in desc {
-            let (cstring, pstring) = to_pcstr(d.semantic_name);
+            let (cstring, pstring) = to_pcstr(&d.semantic_name);
             strings.push(cstring);
 
             descs_ffi.push(D3D11_INPUT_ELEMENT_DESC {
@@ -322,5 +352,48 @@ impl Device {
             wrap_option_out_result(|out| unsafe { self.0.CreateQuery(desc.as_ffi(), out) })?;
 
         Ok(Query(inner))
+    }
+
+    pub fn check_format_support(&self, format: dxgi::Format) -> FormatSupport {
+        FormatSupport::from_bits_truncate(unsafe {
+            self.0.CheckFormatSupport(format.into()).unwrap()
+        })
+    }
+}
+
+bitflags! {
+    #[derive(Clone, Copy, Debug)]
+    pub struct FormatSupport : u32 {
+        const BACK_BUFFER_CAST = D3D11_FORMAT_SUPPORT_BACK_BUFFER_CAST.0 as u32;
+        const BLENDABLE = D3D11_FORMAT_SUPPORT_BLENDABLE.0 as u32;
+        const BUFFER = D3D11_FORMAT_SUPPORT_BUFFER.0 as u32;
+        const CAST_WITHIN_BIT_LAYOUT = D3D11_FORMAT_SUPPORT_CAST_WITHIN_BIT_LAYOUT.0 as u32;
+        const CPU_LOCKABLE = D3D11_FORMAT_SUPPORT_CPU_LOCKABLE.0 as u32;
+        const DECODER_OUTPUT = D3D11_FORMAT_SUPPORT_DECODER_OUTPUT.0 as u32;
+        const DEPTH_STENCIL = D3D11_FORMAT_SUPPORT_DEPTH_STENCIL.0 as u32;
+        const DISPLAY = D3D11_FORMAT_SUPPORT_DISPLAY.0 as u32;
+        const IA_INDEX_BUFFER = D3D11_FORMAT_SUPPORT_IA_INDEX_BUFFER.0 as u32;
+        const IA_VERTEX_BUFFER = D3D11_FORMAT_SUPPORT_IA_VERTEX_BUFFER.0 as u32;
+        const MIP = D3D11_FORMAT_SUPPORT_MIP.0 as u32;
+        const MIP_AUTOGEN = D3D11_FORMAT_SUPPORT_MIP_AUTOGEN.0 as u32;
+        const MULTISAMPLE_LOAD = D3D11_FORMAT_SUPPORT_MULTISAMPLE_LOAD.0 as u32;
+        const MULTISAMPLE_RENDERTARGET = D3D11_FORMAT_SUPPORT_MULTISAMPLE_RENDERTARGET.0 as u32;
+        const MULTISAMPLE_RESOLVE = D3D11_FORMAT_SUPPORT_MULTISAMPLE_RESOLVE.0 as u32;
+        const RENDER_TARGET = D3D11_FORMAT_SUPPORT_RENDER_TARGET.0 as u32;
+        const SHADER_GATHER = D3D11_FORMAT_SUPPORT_SHADER_GATHER.0 as u32;
+        const SHADER_GATHER_COMPARISON = D3D11_FORMAT_SUPPORT_SHADER_GATHER_COMPARISON.0 as u32;
+        const SHADER_LOAD = D3D11_FORMAT_SUPPORT_SHADER_LOAD.0 as u32;
+        const SHADER_SAMPLE = D3D11_FORMAT_SUPPORT_SHADER_SAMPLE.0 as u32;
+        const SHADER_SAMPLE_COMPARISON = D3D11_FORMAT_SUPPORT_SHADER_SAMPLE_COMPARISON.0 as u32;
+        const SHADER_SAMPLE_MONO_TEXT = D3D11_FORMAT_SUPPORT_SHADER_SAMPLE_MONO_TEXT.0 as u32;
+        const SO_BUFFER = D3D11_FORMAT_SUPPORT_SO_BUFFER.0 as u32;
+        const TEXTURE1D = D3D11_FORMAT_SUPPORT_TEXTURE1D.0 as u32;
+        const TEXTURE2D = D3D11_FORMAT_SUPPORT_TEXTURE2D.0 as u32;
+        const TEXTURE3D = D3D11_FORMAT_SUPPORT_TEXTURE3D.0 as u32;
+        const TEXTURECUBE = D3D11_FORMAT_SUPPORT_TEXTURECUBE.0 as u32;
+        const TYPED_UNORDERED_ACCESS_VIEW = D3D11_FORMAT_SUPPORT_TYPED_UNORDERED_ACCESS_VIEW.0 as u32;
+        const VIDEO_ENCODER = D3D11_FORMAT_SUPPORT_VIDEO_ENCODER.0 as u32;
+        const VIDEO_PROCESSOR_INPUT = D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_INPUT.0 as u32;
+        const VIDEO_PROCESSOR_OUTPUT = D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT.0 as u32;
     }
 }

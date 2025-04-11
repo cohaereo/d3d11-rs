@@ -1,6 +1,8 @@
 use bitflags::bitflags;
 use bon::Builder;
-use windows::Win32::{
+use d3d11_sys::{
+    Direct3D11::ID3D11Resource,
+    Dxgi::{Common::*, *},
     Foundation::{
         BOOL, DXGI_STATUS_CLIPPED, DXGI_STATUS_DDA_WAS_STILL_DRAWING,
         DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE, DXGI_STATUS_MODE_CHANGED,
@@ -8,13 +10,12 @@ use windows::Win32::{
         DXGI_STATUS_NO_REDIRECTION, DXGI_STATUS_OCCLUDED, DXGI_STATUS_PRESENT_REQUIRED,
         DXGI_STATUS_UNOCCLUDED, HWND,
     },
-    Graphics::{
-        Direct3D11::ID3D11Resource,
-        Dxgi::{Common::*, *},
-    },
 };
 
-use crate::{device::Device, resource::Resource, util::wrap_out_result, verify_ffi_struct};
+use crate::{
+    device::Device, error::validate_input, resource::Resource, util::wrap_out_result,
+    verify_ffi_struct, FormatSupport,
+};
 
 use super::{Format, SampleDesc};
 
@@ -23,6 +24,13 @@ pub struct SwapChain(pub(crate) IDXGISwapChain);
 
 impl SwapChain {
     pub fn create(device: &Device, desc: &SwapChainDesc) -> crate::Result<Self> {
+        let format_support = device.check_format_support(desc.buffer_desc.format);
+        validate_input!(
+            format_support.contains(FormatSupport::DISPLAY),
+            "Invalid format for swap chain, {:?} does not support being used as display buffer",
+            desc.buffer_desc.format
+        );
+
         let dxgi = unsafe { CreateDXGIFactory::<IDXGIFactory>()? };
         let swap_chain = wrap_out_result(|out| unsafe {
             dxgi.CreateSwapChain(&device.0, desc.as_ffi(), out).ok()

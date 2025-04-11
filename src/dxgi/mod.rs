@@ -1,13 +1,14 @@
 pub mod format;
+use bon::Builder;
 pub use format::*;
 pub mod swapchain;
 pub use swapchain::*;
 
+use d3d11_sys::Dxgi::Common::DXGI_SAMPLE_DESC;
 use static_assertions::assert_eq_size;
-use windows::Win32::Graphics::Dxgi::Common::DXGI_SAMPLE_DESC;
 
 #[repr(C)]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Builder)]
 pub struct SampleDesc {
     pub count: u32,
     pub quality: u32,

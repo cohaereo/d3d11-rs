@@ -1,5 +1,5 @@
 use bon::Builder;
-use windows::Win32::Graphics::Direct3D11::*;
+use d3d11_sys::Direct3D11::*;
 
 use crate::{common::ComparisonFunc, verify_ffi_struct};
 

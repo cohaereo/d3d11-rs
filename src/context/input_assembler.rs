@@ -3,7 +3,7 @@ use std::mem::transmute;
 use crate::{dxgi, error::validate_input, util::OptionalParam, Buffer, InputLayout};
 
 use super::DeviceContext;
-use windows::Win32::Graphics::Direct3D::*;
+use d3d11_sys::Direct3D::*;
 
 impl DeviceContext {
     pub fn input_assembler_set_primitive_topology(&self, topology: PrimitiveTopology) {

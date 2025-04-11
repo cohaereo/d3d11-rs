@@ -2,7 +2,7 @@ use std::mem::transmute;
 
 use bitflags::bitflags;
 use bon::Builder;
-use windows::Win32::{Foundation::BOOL, Graphics::Direct3D11::*};
+use d3d11_sys::{Direct3D11::*, Foundation::BOOL};
 
 use crate::{dxgi, impl_device_child, verify_ffi_struct, ComparisonFunc};
 
@@ -78,7 +78,7 @@ pub struct DepthStencilState(pub(crate) ID3D11DepthStencilState);
 impl_device_child!(DepthStencilState);
 
 #[repr(C)]
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct DepthStencilDesc {
     #[builder(into)]
     pub depth_enable: BOOL,
@@ -98,7 +98,7 @@ pub struct DepthStencilDesc {
 verify_ffi_struct!(DepthStencilDesc, D3D11_DEPTH_STENCIL_DESC);
 
 #[repr(C)]
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct DepthStencilOpDesc {
     pub stencil_fail_op: StencilOp,
     pub stencil_depth_fail_op: StencilOp,

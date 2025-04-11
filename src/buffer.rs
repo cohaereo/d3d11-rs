@@ -1,7 +1,7 @@
 use std::mem::transmute;
 
 use bon::Builder;
-use windows::Win32::Graphics::Direct3D11::*;
+use d3d11_sys::Direct3D11::*;
 
 use crate::{
     impl_device_child, impl_resource, verify_ffi_struct, BindFlags, CpuAccessFlags,

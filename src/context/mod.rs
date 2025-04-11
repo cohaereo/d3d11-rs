@@ -1,3 +1,4 @@
+mod annotation;
 mod draw;
 mod input_assembler;
 mod output_merger;
@@ -7,28 +8,56 @@ mod shader;
 
 use std::os::raw::c_void;
 
+pub use annotation::UserDefinedAnnotation;
 use bitflags::bitflags;
 pub use input_assembler::PrimitiveTopology;
-pub use rasterizer::Viewport;
+pub use rasterizer::{Rect, Viewport};
 
-use windows::{
+use d3d11_sys::{
     core::Interface,
-    Win32::{
-        Foundation::{S_FALSE, S_OK},
-        Graphics::Direct3D11::*,
-    },
+    Direct3D11::*,
+    Foundation::{S_FALSE, S_OK},
 };
 
 use crate::{
-    impl_device_child, query::Asynchronous, rtv::RenderTargetView, util::wrap_out_ptr,
+    impl_device_child,
+    query::Asynchronous,
+    rtv::RenderTargetView,
+    util::{wrap_option_out_result, wrap_out_ptr},
     DepthStencilView, Resource,
 };
+
+#[derive(Clone)]
+pub struct CommandList(pub(crate) ID3D11CommandList);
+impl_device_child!(CommandList);
 
 #[derive(Clone)]
 pub struct DeviceContext(pub(crate) ID3D11DeviceContext);
 impl_device_child!(DeviceContext);
 
 impl DeviceContext {
+    pub fn get_device(&self) -> crate::device::Device {
+        unsafe { crate::device::Device(self.0.GetDevice().unwrap()) }
+    }
+
+    pub fn get_user_defined_annotation(&self) -> UserDefinedAnnotation {
+        UserDefinedAnnotation(self.0.cast::<ID3DUserDefinedAnnotation>().unwrap())
+    }
+
+    pub fn finish_command_list(&self, restore_state: bool) -> crate::Result<CommandList> {
+        let command_list = wrap_option_out_result(|out| unsafe {
+            self.0.FinishCommandList(restore_state as _, out)
+        })?;
+
+        Ok(CommandList(command_list))
+    }
+
+    pub fn execute_command_list(&self, command_list: &CommandList, restore_state: bool) {
+        unsafe {
+            self.0.ExecuteCommandList(&command_list.0, restore_state);
+        }
+    }
+
     pub fn clear_render_target_view(&self, rtv: &RenderTargetView, color: &[f32; 4]) {
         unsafe {
             self.0.ClearRenderTargetView(&rtv.0, color);
@@ -93,14 +122,15 @@ impl DeviceContext {
         })
     }
 
+    // TODO(cohae): Fix this in d3d11-sys instead
     pub unsafe fn get_data<T: Sized>(
         &self,
         query: &impl Asynchronous,
         dont_flush: bool,
     ) -> GetDataResult<T> {
         let mut data = std::mem::zeroed();
-        let result = (windows::core::Interface::vtable(&self.0).GetData)(
-            windows::core::Interface::as_raw(&self.0),
+        let result = (d3d11_sys::core::Interface::vtable(&self.0).GetData)(
+            d3d11_sys::core::Interface::as_raw(&self.0),
             query.to_ffi_async().as_raw(),
             &mut data as *mut T as *mut _,
             std::mem::size_of::<T>() as u32,
@@ -120,8 +150,8 @@ impl DeviceContext {
 
     pub fn is_query_ready(&self, query: &impl Asynchronous) -> bool {
         let result = unsafe {
-            (windows::core::Interface::vtable(&self.0).GetData)(
-                windows::core::Interface::as_raw(&self.0),
+            (d3d11_sys::core::Interface::vtable(&self.0).GetData)(
+                d3d11_sys::core::Interface::as_raw(&self.0),
                 query.to_ffi_async().as_raw(),
                 std::ptr::null_mut(),
                 0,
@@ -130,6 +160,19 @@ impl DeviceContext {
         };
 
         result == S_OK
+    }
+
+    pub fn copy_resource<Src: Resource, Dest: Resource>(&self, src: &Src, dst: &Dest) {
+        unsafe {
+            self.0
+                .CopyResource(&dst.to_ffi_resource(), &src.to_ffi_resource());
+        }
+    }
+
+    pub fn dispatch(&self, x: u32, y: u32, z: u32) {
+        unsafe {
+            self.0.Dispatch(x, y, z);
+        }
     }
 }
 

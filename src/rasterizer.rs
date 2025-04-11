@@ -1,5 +1,5 @@
 use bon::Builder;
-use windows::Win32::{Foundation::BOOL, Graphics::Direct3D11::*};
+use d3d11_sys::{Direct3D11::*, Foundation::BOOL};
 
 use crate::{impl_device_child, verify_ffi_struct};
 
@@ -9,7 +9,7 @@ pub struct RasterizerState(pub(crate) ID3D11RasterizerState);
 impl_device_child!(RasterizerState);
 
 #[repr(C)]
-#[derive(Builder, Clone)]
+#[derive(Debug, Builder, Clone)]
 pub struct RasterizerDesc {
     pub fill_mode: FillMode,
     pub cull_mode: CullMode,

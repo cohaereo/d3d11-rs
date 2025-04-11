@@ -1,5 +1,7 @@
 use bitflags::bitflags;
-use windows::Win32::Graphics::Direct3D11::*;
+use d3d11_sys::Direct3D11::*;
+
+pub use d3d11_sys::Direct3D11::D3D11_SUBRESOURCE_DATA;
 
 #[repr(i32)]
 #[derive(Default, Clone, Copy, Debug, PartialEq, Eq)]
@@ -67,19 +69,27 @@ bitflags! {
 pub trait Resource: Sized {
     fn to_ffi_resource(&self) -> ID3D11Resource;
     fn from_ffi_resource(resource: ID3D11Resource) -> Option<Self>;
+
+    fn get_device(&self) -> crate::Device {
+        crate::Device(unsafe { self.to_ffi_resource().GetDevice() }.unwrap())
+    }
+
+    unsafe fn get_context(&self) -> crate::DeviceContext {
+        self.get_device().get_immediate_context()
+    }
 }
 
 #[macro_export]
 macro_rules! impl_resource {
     ($name:ident) => {
         impl_device_child!($name);
-        impl crate::resource::Resource for $name {
+        impl $crate::resource::Resource for $name {
             fn to_ffi_resource(&self) -> ID3D11Resource {
                 self.0.clone().into()
             }
 
             fn from_ffi_resource(resource: ID3D11Resource) -> Option<Self> {
-                use windows::core::Interface;
+                use d3d11_sys::core::Interface;
                 resource.cast().ok().map(Self)
             }
         }

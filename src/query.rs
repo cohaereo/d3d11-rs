@@ -1,5 +1,7 @@
 use crate::{impl_device_child, verify_ffi_struct};
-use windows::Win32::Graphics::Direct3D11::*;
+use d3d11_sys::Direct3D11::*;
+
+pub use d3d11_sys::Direct3D11::D3D11_QUERY_DATA_TIMESTAMP_DISJOINT;
 
 pub trait Asynchronous: Sized {
     fn to_ffi_async(&self) -> ID3D11Asynchronous;
@@ -10,13 +12,13 @@ pub trait Asynchronous: Sized {
 macro_rules! impl_asynchronous {
     ($name:ident) => {
         impl_device_child!($name);
-        impl crate::query::Asynchronous for $name {
+        impl $crate::query::Asynchronous for $name {
             fn to_ffi_async(&self) -> ID3D11Asynchronous {
                 self.0.clone().into()
             }
 
             fn from_ffi_async(resource: ID3D11Asynchronous) -> Option<Self> {
-                use windows::core::Interface;
+                use d3d11_sys::core::Interface;
                 resource.cast().ok().map(Self)
             }
         }

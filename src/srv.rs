@@ -2,7 +2,7 @@ use std::mem::transmute;
 
 use bitflags::bitflags;
 use bon::Builder;
-use windows::Win32::Graphics::{Direct3D::*, Direct3D11::*};
+use d3d11_sys::{Direct3D::*, Direct3D11::*};
 
 use crate::{dxgi, impl_device_child, verify_ffi_struct};
 
@@ -22,7 +22,7 @@ impl ShaderResourceView {
 }
 
 #[repr(C)]
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct ShaderResourceViewDesc {
     pub format: dxgi::Format,
     pub view_dimension: SrvDimension,
@@ -30,7 +30,7 @@ pub struct ShaderResourceViewDesc {
 verify_ffi_struct!(ShaderResourceViewDesc, D3D11_SHADER_RESOURCE_VIEW_DESC);
 
 #[repr(i32)]
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum SrvDimension {
     Buffer {
         first_element_or_element_offset: u32,
@@ -83,7 +83,7 @@ pub enum SrvDimension {
 }
 
 bitflags! {
-    #[derive(Clone)]
+    #[derive(Clone, Debug)]
     pub struct SrvBufferExFlags: i32 {
         const RAW = D3D11_BUFFEREX_SRV_FLAG_RAW.0;
     }

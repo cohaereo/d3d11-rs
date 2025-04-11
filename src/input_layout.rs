@@ -1,5 +1,5 @@
 use bon::Builder;
-use windows::Win32::Graphics::Direct3D11::*;
+use d3d11_sys::Direct3D11::*;
 
 use crate::{dxgi, impl_device_child};
 
@@ -9,14 +9,17 @@ pub struct InputLayout(pub(crate) ID3D11InputLayout);
 impl_device_child!(InputLayout);
 
 #[derive(Builder, Clone)]
-pub struct InputElementDesc<'a> {
-    pub semantic_name: &'a str,
+pub struct InputElementDesc {
+    #[builder(into)]
+    pub semantic_name: String,
     pub semantic_index: u32,
     pub format: dxgi::Format,
+    #[builder(default = 0)]
     pub input_slot: u32,
 
     #[builder(default)]
     pub aligned_byte_offset: ElementOffset,
+    #[builder(default = InputClassification::PerVertexData)]
     pub input_slot_class: InputClassification,
     #[builder(default)]
     pub instance_data_step_rate: u32,

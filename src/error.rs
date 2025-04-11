@@ -8,7 +8,7 @@ pub enum Error {
     InvalidInput(String),
 
     #[error(transparent)]
-    Win32(#[from] windows::core::Error),
+    Win32(#[from] d3d11_sys::core::Error),
 }
 
 // validate_input!(condition, error_format, ...)

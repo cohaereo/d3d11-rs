@@ -21,6 +21,20 @@ impl DeviceContext {
         }
     }
 
+    pub fn output_merger_get_render_targets(
+        &self,
+    ) -> ([Option<RenderTargetView>; 8], Option<DepthStencilView>) {
+        let mut rtvs = [const { None }; 8];
+        let mut dsv = None;
+        unsafe {
+            self.0.OMGetRenderTargets(Some(&mut rtvs), Some(&mut dsv));
+        }
+        (
+            rtvs.map(|r| r.map(RenderTargetView)),
+            dsv.map(DepthStencilView),
+        )
+    }
+
     pub fn output_merger_set_blend_state(
         &self,
         blend_state: impl OptionalParam<Output = BlendState>,
