@@ -17,6 +17,14 @@ categories = [
 keywords = ["d3d", "directx", "microsoft", "windows", "winapi"]
 include = ["**/*.rs", "Cargo.toml"]
 
+[package.metadata.docs.rs]
+default-target = "x86_64-pc-windows-msvc"
+targets = [
+    "aarch64-pc-windows-msvc",
+    "i686-pc-windows-msvc",
+    "x86_64-pc-windows-msvc",
+]
+
 [dependencies]
 d3d11-sys = { path = "./d3d11-sys", version = "0.1.0" }
 
