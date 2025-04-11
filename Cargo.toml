@@ -1,10 +1,24 @@
 [package]
 name = "d3d11"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2021"
+authors = ["cohaereo <cohae@cohae.dev>"]
+description = "Safe(r) bindings to the D3D11 API"
+homepage = "https://github.com/cohaereo/d3d11-rs"
+repository = "https://github.com/cohaereo/d3d11-rs"
+license = "MIT"
+readme = "README.md"
+categories = [
+    "api-bindings",
+    "graphics",
+    "game-development",
+    "hardware-support",
+]
+keywords = ["d3d", "directx", "microsoft", "windows", "winapi"]
+include = ["**/*.rs", "Cargo.toml"]
 
 [dependencies]
-d3d11-sys = { path = "./d3d11-sys" }
+d3d11-sys = { path = "./d3d11-sys", version = "0.1.0" }
 
 bitflags = "2.6.0"
 bon = "3.3.1"
