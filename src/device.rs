@@ -30,7 +30,7 @@ impl Device {
     /// Temporary method for creating a device.
     /// ImmediateContext can be retrieved by calling `device.immediate_context()`
     // TODO:  Abstract away IDXGIAdapter -> dxgi::Adapter
-    pub fn create(adapter: Option<IDXGIAdapter>) -> crate::Result<Self> {
+    pub fn create(adapter: Option<IDXGIAdapter>, debug: bool) -> crate::Result<Self> {
         let mut device = None;
         let driver_type = if adapter.is_some() {
             D3D_DRIVER_TYPE_UNKNOWN
@@ -43,8 +43,11 @@ impl Device {
                 adapter.as_ref(),
                 driver_type,
                 HMODULE::default(),
-                Default::default(),
-                // D3D11_CREATE_DEVICE_DEBUG,
+                if debug {
+                    D3D11_CREATE_DEVICE_DEBUG
+                } else {
+                    Default::default()
+                },
                 Some(&[D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0]),
                 D3D11_SDK_VERSION,
                 Some(&mut device),

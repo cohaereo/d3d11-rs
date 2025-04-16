@@ -45,7 +45,7 @@ fn main() -> anyhow::Result<()> {
 
     let hwnd = HWND(window.get_win32_window());
 
-    let device = Device::create(None).context("Failed to create device")?;
+    let device = Device::create(None, true).context("Failed to create device")?;
     let ictx = device.get_immediate_context();
 
     let swapchain = SwapChain::create(
