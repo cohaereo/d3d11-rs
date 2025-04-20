@@ -82,6 +82,23 @@ pub enum SrvDimension {
     } = D3D11_SRV_DIMENSION_BUFFEREX.0,
 }
 
+impl SrvDimension {
+    pub fn is_texture(&self) -> bool {
+        match self {
+            Self::Texture1D { .. }
+            | Self::Texture1DArray { .. }
+            | Self::Texture2D { .. }
+            | Self::Texture2DArray { .. }
+            | Self::Texture2DMS { .. }
+            | Self::Texture2DMSArray { .. }
+            | Self::Texture3D { .. }
+            | Self::TextureCube { .. }
+            | Self::TextureCubeArray { .. } => true,
+            _ => false,
+        }
+    }
+}
+
 bitflags! {
     #[derive(Clone, Debug)]
     pub struct SrvBufferExFlags: i32 {

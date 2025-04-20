@@ -259,10 +259,12 @@ impl Device {
         desc: impl OptionalParam<Output = ShaderResourceViewDesc>,
     ) -> crate::Result<ShaderResourceView> {
         if let Some(desc) = desc.as_option() {
-            validate_input!(
-                !desc.format.is_typeless(),
-                "SRV format must not be typeless"
-            );
+            if desc.view_dimension.is_texture() {
+                validate_input!(
+                    !desc.format.is_typeless(),
+                    "SRV format must not be typeless"
+                );
+            }
         }
 
         let inner = wrap_option_out_result(|out| unsafe {
