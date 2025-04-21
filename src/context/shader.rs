@@ -111,6 +111,7 @@ type FuncGetShaderResources = unsafe fn(
     views: Option<&mut [Option<ID3D11ShaderResourceView>]>,
 ) -> ();
 
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub const SAMPLER_SLOT_COUNT: usize = D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT as usize;
     pub const SHADER_RESOURCE_SLOT_COUNT: usize =

@@ -1,5 +1,6 @@
 use super::DeviceContext;
 
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub fn draw(&self, vertex_count: u32, start_vertex_location: u32) {
         unsafe {

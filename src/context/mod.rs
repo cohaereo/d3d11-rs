@@ -35,6 +35,7 @@ impl_device_child!(CommandList);
 pub struct DeviceContext(pub(crate) ID3D11DeviceContext);
 impl_device_child!(DeviceContext);
 
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub fn get_device(&self) -> crate::device::Device {
         unsafe { crate::device::Device(self.0.GetDevice().unwrap()) }

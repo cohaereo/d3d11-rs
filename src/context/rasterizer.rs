@@ -8,6 +8,7 @@ use crate::{util::OptionalParam, RasterizerState};
 
 use super::DeviceContext;
 
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub fn rasterizer_set_viewports(&self, viewports: &[Viewport]) {
         unsafe {

@@ -7,6 +7,7 @@ use crate::{
 
 use super::DeviceContext;
 
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub fn output_merger_set_render_targets(
         &self,

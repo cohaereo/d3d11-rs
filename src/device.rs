@@ -71,7 +71,7 @@ macro_rules! generate_create_shader_method {
     };
 }
 
-// Methods
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl Device {
     pub fn get_immediate_context(&self) -> DeviceContext {
         DeviceContext(

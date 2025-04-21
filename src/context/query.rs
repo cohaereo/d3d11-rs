@@ -2,6 +2,7 @@ use crate::query::Asynchronous;
 
 use super::DeviceContext;
 
+#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub fn begin(&self, async_: &impl Asynchronous) {
         unsafe {
