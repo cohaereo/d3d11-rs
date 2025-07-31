@@ -5,7 +5,6 @@ use crate::{dxgi, error::validate_input, util::OptionalParam, Buffer, InputLayou
 use super::DeviceContext;
 use d3d11_sys::Direct3D::*;
 
-#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
     pub fn input_assembler_set_primitive_topology(&self, topology: PrimitiveTopology) {
         unsafe {

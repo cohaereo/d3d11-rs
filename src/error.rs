@@ -9,6 +9,9 @@ pub enum Error {
 
     #[error(transparent)]
     Win32(#[from] d3d11_sys::core::Error),
+
+    #[error("The requested interface is not supported by the device")]
+    InterfaceUnsupported,
 }
 
 // validate_input!(condition, error_format, ...)

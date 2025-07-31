@@ -5762,7 +5762,7 @@ impl IDXGIFactoryMedia {
             (windows_core::Interface::vtable(self).CreateSwapChainForCompositionSurfaceHandle)(
                 windows_core::Interface::as_raw(self),
                 pdevice.param().abi(),
-                core::mem::transmute(hsurface.unwrap_or(core::mem::zeroed())),
+                core::mem::transmute(hsurface.unwrap_or_default()),
                 pdesc,
                 prestricttooutput.param().abi(),
                 &mut result__,
@@ -5785,7 +5785,7 @@ impl IDXGIFactoryMedia {
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
-            (windows_core::Interface::vtable(self).CreateDecodeSwapChainForCompositionSurfaceHandle)(windows_core::Interface::as_raw(self), pdevice.param().abi(), core::mem::transmute(hsurface.unwrap_or(core::mem::zeroed())), pdesc, pyuvdecodebuffers.param().abi(), prestricttooutput.param().abi(), &mut result__).and_then(|| windows_core::Type::from_abi(result__))
+            (windows_core::Interface::vtable(self).CreateDecodeSwapChainForCompositionSurfaceHandle)(windows_core::Interface::as_raw(self), pdevice.param().abi(), core::mem::transmute(hsurface.unwrap_or_default()), pdesc, pyuvdecodebuffers.param().abi(), prestricttooutput.param().abi(), &mut result__).and_then(|| windows_core::Type::from_abi(result__))
         }
     }
 }

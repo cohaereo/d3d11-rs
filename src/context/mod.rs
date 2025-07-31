@@ -24,7 +24,7 @@ use crate::{
     query::Asynchronous,
     rtv::RenderTargetView,
     util::{wrap_option_out_result, wrap_out_ptr},
-    DepthStencilView, Resource,
+    Box3D, DepthStencilView, Resource,
 };
 
 #[derive(Clone)]
@@ -167,6 +167,31 @@ impl DeviceContext {
         unsafe {
             self.0
                 .CopyResource(&dst.to_ffi_resource(), &src.to_ffi_resource());
+        }
+    }
+
+    pub fn copy_subresource_region<Src: Resource, Dest: Resource>(
+        &self,
+
+        src: &Src,
+        src_subresource: u32,
+        src_box: Option<&Box3D>,
+
+        dst: &Dest,
+        dst_subresource: u32,
+        dst_pos: (u32, u32, u32),
+    ) {
+        unsafe {
+            self.0.CopySubresourceRegion(
+                &dst.to_ffi_resource(),
+                dst_subresource,
+                dst_pos.0,
+                dst_pos.1,
+                dst_pos.2,
+                &src.to_ffi_resource(),
+                src_subresource,
+                src_box.map(|b| b as *const _ as *const D3D11_BOX),
+            );
         }
     }
 

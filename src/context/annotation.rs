@@ -4,7 +4,6 @@ use d3d11_sys::{core::PWSTR, Direct3D11::ID3DUserDefinedAnnotation};
 pub struct UserDefinedAnnotation(pub(crate) ID3DUserDefinedAnnotation);
 // impl_device_child!(UserDefinedAnnotation);
 
-#[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl UserDefinedAnnotation {
     /// Returns the number of previous calls to BeginEvent that have not yet been finalized by calls to the UserDefinedAnnotation::end_event method.
     ///

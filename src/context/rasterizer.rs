@@ -53,6 +53,23 @@ pub struct Viewport {
 }
 assert_eq_size!(Viewport, D3D11_VIEWPORT);
 
+impl Viewport {
+    /// Scales the viewport to fit the given mip level (eg. 0 is full size, 1 is half size, etc.)
+    ///
+    /// Only the width and height are scaled, the top left x and y are not.
+    pub fn scale_to_mip(&self, mip: u32) -> Self {
+        let scale = (1 << mip) as f32;
+        Self {
+            top_left_x: self.top_left_x,
+            top_left_y: self.top_left_y,
+            width: self.width / scale,
+            height: self.height / scale,
+            min_depth: self.min_depth,
+            max_depth: self.max_depth,
+        }
+    }
+}
+
 impl Default for Viewport {
     fn default() -> Self {
         Self {

@@ -1,7 +1,7 @@
 use d3d11_sys::Dxgi::Common::*;
 
 #[repr(i32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Format {
     Opaque420 = DXGI_FORMAT_420_OPAQUE.0,
     A4b4g4r4Unorm = DXGI_FORMAT_A4B4G4R4_UNORM.0,
@@ -281,7 +281,8 @@ impl Format {
             | Format::R32g32b32a32Float
             | Format::R32g32b32Float
             | Format::R32g32Float
-            | Format::R32Float => Some(FormatType::Float),
+            | Format::R32Float
+            | Format::R32FloatX8x24Typeless => Some(FormatType::Float),
 
             Format::B8g8r8a8Typeless
             | Format::B8g8r8x8Typeless
@@ -301,7 +302,6 @@ impl Format {
             | Format::R32g32b32Typeless
             | Format::R32g32Typeless
             | Format::R32g8x24Typeless
-            | Format::R32FloatX8x24Typeless
             | Format::R32Typeless
             | Format::R8g8b8a8Typeless
             | Format::R8g8Typeless

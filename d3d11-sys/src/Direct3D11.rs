@@ -19880,7 +19880,7 @@ impl ID3D11DeviceContext3 {
             (windows_core::Interface::vtable(self).Flush1)(
                 windows_core::Interface::as_raw(self),
                 contexttype,
-                core::mem::transmute(hevent.unwrap_or(core::mem::zeroed())),
+                core::mem::transmute(hevent.unwrap_or_default()),
             )
         }
     }

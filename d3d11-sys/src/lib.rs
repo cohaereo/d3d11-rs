@@ -8,6 +8,9 @@
     clippy::missing_safety_doc,
     clippy::too_many_arguments,
     clippy::missing_transmute_annotations,
+    clippy::useless_transmute,
+    clippy::upper_case_acronyms,
+    clippy::useless_conversion
 )]
 
 pub mod Direct3D;
@@ -17,3 +20,9 @@ pub mod Foundation;
 pub mod Security;
 
 pub use windows_core as core;
+
+#[allow(unused)]
+mod Gdi {
+    pub type HMONITOR = *mut ::core::ffi::c_void;
+    pub type HDC = *mut ::core::ffi::c_void;
+}

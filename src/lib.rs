@@ -1,3 +1,10 @@
+#![allow(
+    clippy::missing_safety_doc,
+    clippy::missing_transmute_annotations,
+    clippy::useless_transmute,
+    clippy::upper_case_acronyms
+)]
+
 pub mod blend_state;
 pub mod buffer;
 pub mod common;
