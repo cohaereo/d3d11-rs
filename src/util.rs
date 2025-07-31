@@ -1,29 +1,29 @@
 use std::ffi::CString;
 
-use d3d11_sys::core::PCSTR;
+use d3d11_ffi::core::PCSTR;
 
 // Helper for working with DX11 methods that return results as HRESULT and out parameters as an Option<T>
-pub fn wrap_option_out_result<T, F>(f: F) -> d3d11_sys::core::Result<T>
+pub fn wrap_option_out_result<T, F>(f: F) -> d3d11_ffi::core::Result<T>
 where
-    F: FnOnce(Option<*mut Option<T>>) -> d3d11_sys::core::Result<()>,
+    F: FnOnce(Option<*mut Option<T>>) -> d3d11_ffi::core::Result<()>,
 {
     let mut result = None;
     f(Some(&raw mut result))?;
     Ok(result.unwrap())
 }
 
-pub fn wrap_out_result<T, F>(f: F) -> d3d11_sys::core::Result<T>
+pub fn wrap_out_result<T, F>(f: F) -> d3d11_ffi::core::Result<T>
 where
-    F: FnOnce(*mut Option<T>) -> d3d11_sys::core::Result<()>,
+    F: FnOnce(*mut Option<T>) -> d3d11_ffi::core::Result<()>,
 {
     let mut result = None;
     f(&raw mut result)?;
     Ok(result.unwrap())
 }
 
-pub fn wrap_out_ptr<T: Default, F>(f: F) -> d3d11_sys::core::Result<T>
+pub fn wrap_out_ptr<T: Default, F>(f: F) -> d3d11_ffi::core::Result<T>
 where
-    F: FnOnce(*mut T) -> d3d11_sys::core::Result<()>,
+    F: FnOnce(*mut T) -> d3d11_ffi::core::Result<()>,
 {
     let mut result = T::default();
     f(&raw mut result)?;

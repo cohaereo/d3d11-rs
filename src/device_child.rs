@@ -1,4 +1,4 @@
-use d3d11_sys::{Direct3D::WKPDID_D3DDebugObjectName, Direct3D11::ID3D11DeviceChild};
+use d3d11_ffi::{Direct3D::WKPDID_D3DDebugObjectName, Direct3D11::ID3D11DeviceChild};
 
 use crate::device::Device;
 
@@ -28,7 +28,7 @@ pub trait DeviceChild {
 macro_rules! impl_device_child {
     ($name:ident) => {
         impl $crate::device_child::DeviceChild for $name {
-            fn as_device_child(&self) -> &d3d11_sys::Direct3D11::ID3D11DeviceChild {
+            fn as_device_child(&self) -> &d3d11_ffi::Direct3D11::ID3D11DeviceChild {
                 &self.0
             }
         }

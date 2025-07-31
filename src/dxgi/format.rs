@@ -1,4 +1,4 @@
-use d3d11_sys::Dxgi::Common::*;
+use d3d11_ffi::Dxgi::Common::*;
 
 #[repr(i32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]

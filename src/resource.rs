@@ -1,7 +1,7 @@
 use bitflags::bitflags;
-use d3d11_sys::Direct3D11::*;
+use d3d11_ffi::Direct3D11::*;
 
-pub use d3d11_sys::Direct3D11::D3D11_SUBRESOURCE_DATA;
+pub use d3d11_ffi::Direct3D11::D3D11_SUBRESOURCE_DATA;
 
 #[repr(i32)]
 #[derive(Default, Clone, Copy, Debug, PartialEq, Eq)]
@@ -89,7 +89,7 @@ macro_rules! impl_resource {
             }
 
             fn from_ffi_resource(resource: ID3D11Resource) -> Option<Self> {
-                use d3d11_sys::core::Interface;
+                use d3d11_ffi::core::Interface;
                 resource.cast().ok().map(Self)
             }
         }

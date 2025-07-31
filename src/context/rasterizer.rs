@@ -1,7 +1,7 @@
 use std::mem::transmute;
 
 use bon::Builder;
-use d3d11_sys::Direct3D11::D3D11_VIEWPORT;
+use d3d11_ffi::Direct3D11::D3D11_VIEWPORT;
 use static_assertions::assert_eq_size;
 
 use crate::{util::OptionalParam, RasterizerState};
@@ -91,4 +91,4 @@ pub struct Rect {
     pub right: i32,
     pub bottom: i32,
 }
-assert_eq_size!(Rect, d3d11_sys::Foundation::RECT);
+assert_eq_size!(Rect, d3d11_ffi::Foundation::RECT);

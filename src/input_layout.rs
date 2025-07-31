@@ -1,5 +1,5 @@
 use bon::Builder;
-use d3d11_sys::Direct3D11::*;
+use d3d11_ffi::Direct3D11::*;
 
 use crate::{dxgi, impl_device_child};
 

@@ -1,7 +1,7 @@
 use crate::{impl_device_child, verify_ffi_struct};
-use d3d11_sys::Direct3D11::*;
+use d3d11_ffi::Direct3D11::*;
 
-pub use d3d11_sys::Direct3D11::D3D11_QUERY_DATA_TIMESTAMP_DISJOINT;
+pub use d3d11_ffi::Direct3D11::D3D11_QUERY_DATA_TIMESTAMP_DISJOINT;
 
 pub trait Asynchronous: Sized {
     fn to_ffi_async(&self) -> ID3D11Asynchronous;
@@ -18,7 +18,7 @@ macro_rules! impl_asynchronous {
             }
 
             fn from_ffi_async(resource: ID3D11Asynchronous) -> Option<Self> {
-                use d3d11_sys::core::Interface;
+                use d3d11_ffi::core::Interface;
                 resource.cast().ok().map(Self)
             }
         }

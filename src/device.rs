@@ -1,5 +1,5 @@
 use bitflags::bitflags;
-use d3d11_sys::{Direct3D::*, Direct3D11::*, Dxgi::IDXGIAdapter, Foundation::HMODULE};
+use d3d11_ffi::{Direct3D::*, Direct3D11::*, Dxgi::IDXGIAdapter, Foundation::HMODULE};
 
 use crate::{
     blend_state::{BlendDesc, BlendState},

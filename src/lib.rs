@@ -50,5 +50,5 @@ pub use srv::{ShaderResourceView, ShaderResourceViewDesc};
 pub use texture::{Texture1D, Texture1dDesc, Texture2D, Texture2dDesc, Texture3D, Texture3dDesc};
 pub use uav::{UnorderedAccessView, UnorderedAccessViewDesc};
 
-pub use d3d11_sys as sys;
-pub use d3d11_sys::Foundation::HWND;
+pub use d3d11_ffi as sys;
+pub use d3d11_ffi::Foundation::HWND;

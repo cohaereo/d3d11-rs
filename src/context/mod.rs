@@ -13,7 +13,7 @@ use bitflags::bitflags;
 pub use input_assembler::PrimitiveTopology;
 pub use rasterizer::{Rect, Viewport};
 
-use d3d11_sys::{
+use d3d11_ffi::{
     core::Interface,
     Direct3D11::*,
     Foundation::{S_FALSE, S_OK},
@@ -130,8 +130,8 @@ impl DeviceContext {
         dont_flush: bool,
     ) -> GetDataResult<T> {
         let mut data = std::mem::zeroed();
-        let result = (d3d11_sys::core::Interface::vtable(&self.0).GetData)(
-            d3d11_sys::core::Interface::as_raw(&self.0),
+        let result = (d3d11_ffi::core::Interface::vtable(&self.0).GetData)(
+            d3d11_ffi::core::Interface::as_raw(&self.0),
             query.to_ffi_async().as_raw(),
             &mut data as *mut T as *mut _,
             std::mem::size_of::<T>() as u32,
@@ -151,8 +151,8 @@ impl DeviceContext {
 
     pub fn is_query_ready(&self, query: &impl Asynchronous) -> bool {
         let result = unsafe {
-            (d3d11_sys::core::Interface::vtable(&self.0).GetData)(
-                d3d11_sys::core::Interface::as_raw(&self.0),
+            (d3d11_ffi::core::Interface::vtable(&self.0).GetData)(
+                d3d11_ffi::core::Interface::as_raw(&self.0),
                 query.to_ffi_async().as_raw(),
                 std::ptr::null_mut(),
                 0,

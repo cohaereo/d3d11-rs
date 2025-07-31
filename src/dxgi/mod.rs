@@ -4,7 +4,7 @@ pub use format::*;
 pub mod swapchain;
 pub use swapchain::*;
 
-use d3d11_sys::Dxgi::Common::DXGI_SAMPLE_DESC;
+use d3d11_ffi::Dxgi::Common::DXGI_SAMPLE_DESC;
 use static_assertions::assert_eq_size;
 
 #[repr(C)]

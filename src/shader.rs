@@ -1,4 +1,4 @@
-use d3d11_sys::{
+use d3d11_ffi::{
     core::PCSTR,
     Direct3D::{
         Fxc::{D3DCompile, D3DCOMPILE_DEBUG},

@@ -1,6 +1,6 @@
 use bitflags::bitflags;
 use bon::Builder;
-use d3d11_sys::{
+use d3d11_ffi::{
     Direct3D11::ID3D11Resource,
     Dxgi::{Common::*, *},
     Foundation::{

@@ -8,7 +8,7 @@ pub enum Error {
     InvalidInput(String),
 
     #[error(transparent)]
-    Win32(#[from] d3d11_sys::core::Error),
+    Win32(#[from] d3d11_ffi::core::Error),
 
     #[error("The requested interface is not supported by the device")]
     InterfaceUnsupported,

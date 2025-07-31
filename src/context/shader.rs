@@ -4,7 +4,7 @@ use crate::{
     buffer::Buffer, sampler::SamplerState, shader::*, util::OptionalParam, ShaderResourceView,
     UnorderedAccessView,
 };
-use d3d11_sys::Direct3D11::*;
+use d3d11_ffi::Direct3D11::*;
 
 use super::DeviceContext;
 

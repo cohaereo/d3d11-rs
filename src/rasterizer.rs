@@ -1,5 +1,5 @@
 use bon::Builder;
-use d3d11_sys::{Direct3D11::*, Foundation::BOOL};
+use d3d11_ffi::{Direct3D11::*, Foundation::BOOL};
 
 use crate::{impl_device_child, verify_ffi_struct};
 
