@@ -78,7 +78,7 @@ impl Default for Viewport {
             width: 0.0,
             height: 0.0,
             min_depth: 0.0,
-            max_depth: 0.0,
+            max_depth: 1.0,
         }
     }
 }
