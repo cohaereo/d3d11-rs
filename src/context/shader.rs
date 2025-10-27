@@ -12,21 +12,24 @@ use super::DeviceContext;
 //  // ...
 // });
 
+type ID3D11DeviceContext0 = ID3D11DeviceContext;
 macro_rules! generate_common_stage_methods {
     (
+        api($api_version:expr),
         $method:ident,
         $method_ffi:ident,
         ($($arg:ident: $arg_ty:ty),*) -> $ret:ty $impl:block
     ) => {
-        generate_common_stage_methods!(single_stage $method, $method_ffi, vertex, VS, ($($arg: $arg_ty),*) -> $ret $impl);
-        generate_common_stage_methods!(single_stage $method, $method_ffi, pixel, PS, ($($arg: $arg_ty),*) -> $ret $impl);
-        generate_common_stage_methods!(single_stage $method, $method_ffi, geometry, GS, ($($arg: $arg_ty),*) -> $ret $impl);
-        generate_common_stage_methods!(single_stage $method, $method_ffi, hull, HS, ($($arg: $arg_ty),*) -> $ret $impl);
-        generate_common_stage_methods!(single_stage $method, $method_ffi, domain, DS, ($($arg: $arg_ty),*) -> $ret $impl);
-        generate_common_stage_methods!(single_stage $method, $method_ffi, compute, CS, ($($arg: $arg_ty),*) -> $ret $impl);
+        generate_common_stage_methods!(single_stage api($api_version), $method, $method_ffi, vertex, VS, ($($arg: $arg_ty),*) -> $ret $impl);
+        generate_common_stage_methods!(single_stage api($api_version), $method, $method_ffi, pixel, PS, ($($arg: $arg_ty),*) -> $ret $impl);
+        generate_common_stage_methods!(single_stage api($api_version), $method, $method_ffi, geometry, GS, ($($arg: $arg_ty),*) -> $ret $impl);
+        generate_common_stage_methods!(single_stage api($api_version), $method, $method_ffi, hull, HS, ($($arg: $arg_ty),*) -> $ret $impl);
+        generate_common_stage_methods!(single_stage api($api_version), $method, $method_ffi, domain, DS, ($($arg: $arg_ty),*) -> $ret $impl);
+        generate_common_stage_methods!(single_stage api($api_version), $method, $method_ffi, compute, CS, ($($arg: $arg_ty),*) -> $ret $impl);
     };
     (
         single_stage
+        api($api_version:expr),
         $method:ident,
         $method_ffi:ident,
         $prefix:ident, // eg vs/ps
@@ -36,8 +39,8 @@ macro_rules! generate_common_stage_methods {
         paste::paste! {
             #[doc(alias = "" [<$prefix_ffi $method_ffi>])]
             pub fn [<$prefix _ $method>](&self, $($arg: $arg_ty),*) -> $ret {
-                let ctx = &self.0;
-                let method = ID3D11DeviceContext::[<$prefix_ffi $method_ffi>];
+                let ctx = &self.$api_version;
+                let method = [<ID3D11DeviceContext $api_version>]::[<$prefix_ffi $method_ffi>];
                 let inner = $impl;
 
                 inner(ctx, method)
@@ -81,6 +84,15 @@ type FuncSetConstantBuffers = unsafe fn(
     buffers: Option<&[Option<ID3D11Buffer>]>,
 ) -> ();
 
+type FuncSetConstantBuffers1 = unsafe fn(
+    ctx: &ID3D11DeviceContext1,
+    start_slot: u32,
+    num_buffers: u32,
+    buffers: Option<*const Option<ID3D11Buffer>>,
+    first_constant: Option<*const u32>,
+    num_constants: Option<*const u32>,
+) -> ();
+
 type FuncGetConstantBuffers = unsafe fn(
     ctx: &ID3D11DeviceContext,
     start_slot: u32,
@@ -120,14 +132,37 @@ impl DeviceContext {
         D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT as usize;
 
     // generate_common_stage_methods!(get_constant_buffers, GetConstantBuffers);
-    generate_common_stage_methods!(set_constant_buffers, SetConstantBuffers, (start_slot: u32, buffers: &[Option<Buffer>]) -> () {
+    generate_common_stage_methods!(api(0), set_constant_buffers, SetConstantBuffers, (start_slot: u32, buffers: &[Option<Buffer>]) -> () {
         |ctx, method: FuncSetConstantBuffers|
         unsafe {
             // SAFETY: `Buffer` is a transparent wrapper around `ID3D11Buffer`
             method(ctx, start_slot, Some(transmute(buffers)));
         }
     });
-    generate_common_stage_methods!(get_constant_buffers, GetConstantBuffers, () -> [Option<Buffer>; D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT as usize] {
+    generate_common_stage_methods!(api(1), set_constant_buffers1, SetConstantBuffers1, (start_slot: u32, buffers: &[Option<Buffer>], first_constant: Option<&[u32]>, num_constants: Option<&[u32]>) -> () {
+        |ctx, method: FuncSetConstantBuffers1|
+        unsafe {
+            let num_buffers = buffers.len() as u32;
+            if let Some(first_constant) = first_constant {
+                assert_eq!(
+                    buffers.len(),
+                    first_constant.len(),
+                    "Mismatched buffer and first constant lengths"
+                );
+            }
+            if let Some(num_constants) = num_constants {
+                assert_eq!(
+                    buffers.len(),
+                    num_constants.len(),
+                    "Mismatched buffer and num constants lengths"
+                );
+            }
+
+            // SAFETY: `Buffer` is a transparent wrapper around `ID3D11Buffer`
+            method(ctx, start_slot, num_buffers, Some(buffers.as_ptr() as *const Option<ID3D11Buffer>), first_constant.map(|f| f.as_ptr()), num_constants.map(|n| n.as_ptr()));
+        }
+    });
+    generate_common_stage_methods!(api(0), get_constant_buffers, GetConstantBuffers, () -> [Option<Buffer>; D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT as usize] {
         |ctx, method: FuncGetConstantBuffers|
         unsafe {
             let mut buffers = [const { None }; D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT as usize];
@@ -136,14 +171,14 @@ impl DeviceContext {
         }
     });
     // generate_common_stage_methods!(get_samplers, GetSamplers);
-    generate_common_stage_methods!(set_samplers, SetSamplers, (start_slot: u32, samplers: &[Option<SamplerState>]) -> () {
+    generate_common_stage_methods!(api(0), set_samplers, SetSamplers, (start_slot: u32, samplers: &[Option<SamplerState>]) -> () {
         |ctx, method: FuncSetSamplers|
         unsafe {
             // SAFETY: `Sampler` is a transparent wrapper around `ID3D11SamplerState`
             method(ctx, start_slot, Some(transmute(samplers)));
         }
     });
-    generate_common_stage_methods!(get_samplers, GetSamplers, () -> [Option<SamplerState>; D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT as usize] {
+    generate_common_stage_methods!(api(0), get_samplers, GetSamplers, () -> [Option<SamplerState>; D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT as usize] {
         |ctx, method: FuncGetSamplers|
         unsafe {
             let mut samplers = [const { None }; D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT as usize];
@@ -152,13 +187,13 @@ impl DeviceContext {
         }
     });
     // generate_common_stage_methods!(get_shader_resources, GetShaderResources);
-    generate_common_stage_methods!(set_shader_resources, SetShaderResources, (start_slot: u32, views: &[Option<ShaderResourceView>]) -> () {
+    generate_common_stage_methods!(api(0), set_shader_resources, SetShaderResources, (start_slot: u32, views: &[Option<ShaderResourceView>]) -> () {
         |ctx, method: FuncSetShaderResources|
         unsafe {
             method(ctx, start_slot, Some(transmute(views)));
         }
     });
-    generate_common_stage_methods!(get_shader_resources, GetShaderResources, () -> [Option<ShaderResourceView>; D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT as usize] {
+    generate_common_stage_methods!(api(0), get_shader_resources, GetShaderResources, () -> [Option<ShaderResourceView>; D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT as usize] {
         |ctx, method: FuncGetShaderResources|
         unsafe {
             let mut views = [const { None }; D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT as usize];

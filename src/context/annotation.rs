@@ -1,4 +1,4 @@
-use d3d11_ffi::{core::PWSTR, Direct3D11::ID3DUserDefinedAnnotation};
+use d3d11_ffi::{core_supplemental::PWSTR, Direct3D11::ID3DUserDefinedAnnotation};
 
 #[derive(Clone)]
 pub struct UserDefinedAnnotation(pub(crate) ID3DUserDefinedAnnotation);

@@ -731,8 +731,8 @@ pub struct D3D_SHADER_INPUT_TYPE(pub i32);
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D_SHADER_MACRO {
-    pub Name: windows_core::PCSTR,
-    pub Definition: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
+    pub Definition: crate::core_supplemental::PCSTR,
 }
 impl Default for D3D_SHADER_MACRO {
     fn default() -> Self {
@@ -1088,7 +1088,7 @@ impl ID3DInclude {
         pbytes: *mut u32,
     ) -> windows_core::Result<()>
     where
-        P1: windows_core::Param<windows_core::PCSTR>,
+        P1: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).Open)(
@@ -1117,7 +1117,7 @@ pub struct ID3DInclude_Vtbl {
     pub Open: unsafe extern "system" fn(
         *mut core::ffi::c_void,
         D3D_INCLUDE_TYPE,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *const core::ffi::c_void,
         *mut *mut core::ffi::c_void,
         *mut u32,
@@ -1131,7 +1131,7 @@ pub trait ID3DInclude_Impl {
     fn Open(
         &self,
         includetype: D3D_INCLUDE_TYPE,
-        pfilename: &windows_core::PCSTR,
+        pfilename: &crate::core_supplemental::PCSTR,
         pparentdata: *const core::ffi::c_void,
         ppdata: *mut *mut core::ffi::c_void,
         pbytes: *mut u32,
@@ -1143,7 +1143,7 @@ impl ID3DInclude_Vtbl {
         unsafe extern "system" fn Open<Identity: ID3DInclude_Impl>(
             this: *mut core::ffi::c_void,
             includetype: D3D_INCLUDE_TYPE,
-            pfilename: windows_core::PCSTR,
+            pfilename: crate::core_supplemental::PCSTR,
             pparentdata: *const core::ffi::c_void,
             ppdata: *mut *mut core::ffi::c_void,
             pbytes: *mut u32,

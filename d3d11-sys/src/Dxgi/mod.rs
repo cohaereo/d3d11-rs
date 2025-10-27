@@ -7,7 +7,8 @@ pub unsafe fn CreateDXGIFactory<T>() -> windows_core::Result<T>
 where
     T: windows_core::Interface,
 {
-    windows_targets::link!("dxgi.dll" "system" fn CreateDXGIFactory(riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
+    crate::dxvk::set_wsi_driver_env();
+    crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn CreateDXGIFactory(riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
     let mut result__ = core::ptr::null_mut();
     unsafe {
         CreateDXGIFactory(&T::IID, &mut result__)
@@ -19,7 +20,8 @@ pub unsafe fn CreateDXGIFactory1<T>() -> windows_core::Result<T>
 where
     T: windows_core::Interface,
 {
-    windows_targets::link!("dxgi.dll" "system" fn CreateDXGIFactory1(riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
+    crate::dxvk::set_wsi_driver_env();
+    crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn CreateDXGIFactory1(riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
     let mut result__ = core::ptr::null_mut();
     unsafe {
         CreateDXGIFactory1(&T::IID, &mut result__)
@@ -31,7 +33,8 @@ pub unsafe fn CreateDXGIFactory2<T>(flags: DXGI_CREATE_FACTORY_FLAGS) -> windows
 where
     T: windows_core::Interface,
 {
-    windows_targets::link!("dxgi.dll" "system" fn CreateDXGIFactory2(flags : DXGI_CREATE_FACTORY_FLAGS, riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
+    crate::dxvk::set_wsi_driver_env();
+    crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn CreateDXGIFactory2(flags : DXGI_CREATE_FACTORY_FLAGS, riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
     let mut result__ = core::ptr::null_mut();
     unsafe {
         CreateDXGIFactory2(flags, &T::IID, &mut result__)
@@ -40,12 +43,12 @@ where
 }
 #[inline]
 pub unsafe fn DXGIDeclareAdapterRemovalSupport() -> windows_core::Result<()> {
-    windows_targets::link!("dxgi.dll" "system" fn DXGIDeclareAdapterRemovalSupport() -> windows_core::HRESULT);
+    crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn DXGIDeclareAdapterRemovalSupport() -> windows_core::HRESULT);
     unsafe { DXGIDeclareAdapterRemovalSupport().ok() }
 }
 #[inline]
 pub unsafe fn DXGIDisableVBlankVirtualization() -> windows_core::Result<()> {
-    windows_targets::link!("dxgi.dll" "system" fn DXGIDisableVBlankVirtualization() -> windows_core::HRESULT);
+    crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn DXGIDisableVBlankVirtualization() -> windows_core::HRESULT);
     unsafe { DXGIDisableVBlankVirtualization().ok() }
 }
 #[inline]
@@ -53,7 +56,7 @@ pub unsafe fn DXGIGetDebugInterface1<T>(flags: u32) -> windows_core::Result<T>
 where
     T: windows_core::Interface,
 {
-    windows_targets::link!("dxgi.dll" "system" fn DXGIGetDebugInterface1(flags : u32, riid : *const windows_core::GUID, pdebug : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
+    crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn DXGIGetDebugInterface1(flags : u32, riid : *const windows_core::GUID, pdebug : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
     let mut result__ = core::ptr::null_mut();
     unsafe {
         DXGIGetDebugInterface1(flags, &T::IID, &mut result__)
@@ -6234,7 +6237,7 @@ impl IDXGIInfoQueue {
         pdescription: P4,
     ) -> windows_core::Result<()>
     where
-        P4: windows_core::Param<windows_core::PCSTR>,
+        P4: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).AddMessage)(
@@ -6254,7 +6257,7 @@ impl IDXGIInfoQueue {
         pdescription: P1,
     ) -> windows_core::Result<()>
     where
-        P1: windows_core::Param<windows_core::PCSTR>,
+        P1: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).AddApplicationMessage)(
@@ -6471,12 +6474,12 @@ pub struct IDXGIInfoQueue_Vtbl {
         DXGI_INFO_QUEUE_MESSAGE_CATEGORY,
         DXGI_INFO_QUEUE_MESSAGE_SEVERITY,
         i32,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> windows_core::HRESULT,
     pub AddApplicationMessage: unsafe extern "system" fn(
         *mut core::ffi::c_void,
         DXGI_INFO_QUEUE_MESSAGE_SEVERITY,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> windows_core::HRESULT,
     pub SetBreakOnCategory: unsafe extern "system" fn(
         *mut core::ffi::c_void,
@@ -6592,12 +6595,12 @@ pub trait IDXGIInfoQueue_Impl: windows_core::IUnknownImpl {
         category: DXGI_INFO_QUEUE_MESSAGE_CATEGORY,
         severity: DXGI_INFO_QUEUE_MESSAGE_SEVERITY,
         id: i32,
-        pdescription: &windows_core::PCSTR,
+        pdescription: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<()>;
     fn AddApplicationMessage(
         &self,
         severity: DXGI_INFO_QUEUE_MESSAGE_SEVERITY,
-        pdescription: &windows_core::PCSTR,
+        pdescription: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<()>;
     fn SetBreakOnCategory(
         &self,
@@ -7073,7 +7076,7 @@ impl IDXGIInfoQueue_Vtbl {
             category: DXGI_INFO_QUEUE_MESSAGE_CATEGORY,
             severity: DXGI_INFO_QUEUE_MESSAGE_SEVERITY,
             id: i32,
-            pdescription: windows_core::PCSTR,
+            pdescription: crate::core_supplemental::PCSTR,
         ) -> windows_core::HRESULT {
             unsafe {
                 let this: &Identity =
@@ -7095,7 +7098,7 @@ impl IDXGIInfoQueue_Vtbl {
         >(
             this: *mut core::ffi::c_void,
             severity: DXGI_INFO_QUEUE_MESSAGE_SEVERITY,
-            pdescription: windows_core::PCSTR,
+            pdescription: crate::core_supplemental::PCSTR,
         ) -> windows_core::HRESULT {
             unsafe {
                 let this: &Identity =
@@ -9497,7 +9500,7 @@ impl IDXGIResource1 {
         lpname: P2,
     ) -> windows_core::Result<crate::Foundation::HANDLE>
     where
-        P2: windows_core::Param<windows_core::PCWSTR>,
+        P2: windows_core::Param<crate::core_supplemental::PCWSTR>,
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
@@ -9525,7 +9528,7 @@ pub struct IDXGIResource1_Vtbl {
         *mut core::ffi::c_void,
         *const crate::Security::SECURITY_ATTRIBUTES,
         u32,
-        windows_core::PCWSTR,
+        crate::core_supplemental::PCWSTR,
         *mut crate::Foundation::HANDLE,
     ) -> windows_core::HRESULT,
     #[cfg(not(feature = "Win32_Security"))]
@@ -9538,7 +9541,7 @@ pub trait IDXGIResource1_Impl: IDXGIResource_Impl {
         &self,
         pattributes: *const crate::Security::SECURITY_ATTRIBUTES,
         dwaccess: u32,
-        lpname: &windows_core::PCWSTR,
+        lpname: &crate::core_supplemental::PCWSTR,
     ) -> windows_core::Result<crate::Foundation::HANDLE>;
 }
 #[cfg(feature = "Win32_Security")]
@@ -9574,7 +9577,7 @@ impl IDXGIResource1_Vtbl {
             this: *mut core::ffi::c_void,
             pattributes: *const crate::Security::SECURITY_ATTRIBUTES,
             dwaccess: u32,
-            lpname: windows_core::PCWSTR,
+            lpname: crate::core_supplemental::PCWSTR,
             phandle: *mut crate::Foundation::HANDLE,
         ) -> windows_core::HRESULT {
             unsafe {

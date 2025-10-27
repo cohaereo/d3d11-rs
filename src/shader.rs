@@ -1,5 +1,5 @@
 use d3d11_ffi::{
-    core::PCSTR,
+    core_supplemental::PCSTR,
     Direct3D::{
         Fxc::{D3DCompile, D3DCOMPILE_DEBUG},
         D3D_SHADER_MACRO,
@@ -40,6 +40,7 @@ pub struct ComputeShader(pub(crate) ID3D11ComputeShader);
 impl_device_child!(ComputeShader);
 
 /// Provides a safe wrapper around the D3DCompile function.
+#[cfg(feature = "fxc")]
 pub fn fxc_compile(
     data: &[u8],
     source_name: Option<&str>,

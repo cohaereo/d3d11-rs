@@ -18,7 +18,9 @@ pub mod Direct3D11;
 pub mod Dxgi;
 pub mod Foundation;
 pub mod Security;
+mod dxvk;
 
+pub mod core_supplemental;
 pub use windows_core as core;
 
 #[allow(unused)]

@@ -74,7 +74,7 @@ macro_rules! generate_create_shader_method {
 #[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl Device {
     pub fn get_immediate_context(&self) -> DeviceContext {
-        DeviceContext(
+        DeviceContext::from_raw(
             unsafe { self.0.GetImmediateContext() }.expect("Failed to get immediate context"),
         )
     }
@@ -82,7 +82,7 @@ impl Device {
     pub fn create_deferred_context(&self) -> crate::Result<DeviceContext> {
         let inner = wrap_option_out_result(|out| unsafe { self.0.CreateDeferredContext(0, out) })?;
 
-        Ok(DeviceContext(inner))
+        Ok(DeviceContext::from_raw(inner))
     }
 
     pub fn create_sampler_state(&self, desc: &SamplerDesc) -> crate::Result<SamplerState> {

@@ -28,3 +28,7 @@ Win32_Graphics_Dxgi_Common = []
 Win32_Graphics_Dxgi = []
 Win32_Graphics_Gdi = []
 Win32_Security = []
+
+dxvk_wsi_glfw = []
+dxvk_wsi_sdl2 = []
+dxvk_wsi_sdl3 = []

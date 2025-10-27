@@ -16,7 +16,8 @@ pub unsafe fn D3D11CreateDevice<P0>(
 where
     P0: windows_core::Param<crate::Dxgi::IDXGIAdapter>,
 {
-    windows_targets::link!("d3d11.dll" "system" fn D3D11CreateDevice(padapter : * mut core::ffi::c_void, drivertype : super::Direct3D:: D3D_DRIVER_TYPE, software : crate::Foundation:: HMODULE, flags : D3D11_CREATE_DEVICE_FLAG, pfeaturelevels : *const super::Direct3D:: D3D_FEATURE_LEVEL, featurelevels : u32, sdkversion : u32, ppdevice : *mut * mut core::ffi::c_void, pfeaturelevel : *mut super::Direct3D:: D3D_FEATURE_LEVEL, ppimmediatecontext : *mut * mut core::ffi::c_void) -> windows_core::HRESULT);
+    crate::dxvk::set_wsi_driver_env();
+    crate::link!("d3d11.dll" "dxvk_d3d11" "system" fn D3D11CreateDevice(padapter : * mut core::ffi::c_void, drivertype : super::Direct3D:: D3D_DRIVER_TYPE, software : crate::Foundation:: HMODULE, flags : D3D11_CREATE_DEVICE_FLAG, pfeaturelevels : *const super::Direct3D:: D3D_FEATURE_LEVEL, featurelevels : u32, sdkversion : u32, ppdevice : *mut * mut core::ffi::c_void, pfeaturelevel : *mut super::Direct3D:: D3D_FEATURE_LEVEL, ppimmediatecontext : *mut * mut core::ffi::c_void) -> windows_core::HRESULT);
     unsafe {
         D3D11CreateDevice(
             padapter.param().abi(),
@@ -58,7 +59,8 @@ pub unsafe fn D3D11CreateDeviceAndSwapChain<P0>(
 where
     P0: windows_core::Param<crate::Dxgi::IDXGIAdapter>,
 {
-    windows_targets::link!("d3d11.dll" "system" fn D3D11CreateDeviceAndSwapChain(padapter : * mut core::ffi::c_void, drivertype : super::Direct3D:: D3D_DRIVER_TYPE, software : crate::Foundation:: HMODULE, flags : D3D11_CREATE_DEVICE_FLAG, pfeaturelevels : *const super::Direct3D:: D3D_FEATURE_LEVEL, featurelevels : u32, sdkversion : u32, pswapchaindesc : *const crate::Dxgi:: DXGI_SWAP_CHAIN_DESC, ppswapchain : *mut * mut core::ffi::c_void, ppdevice : *mut * mut core::ffi::c_void, pfeaturelevel : *mut super::Direct3D:: D3D_FEATURE_LEVEL, ppimmediatecontext : *mut * mut core::ffi::c_void) -> windows_core::HRESULT);
+    crate::dxvk::set_wsi_driver_env();
+    crate::link!("d3d11.dll" "dxvk_d3d11" "system" fn D3D11CreateDeviceAndSwapChain(padapter : * mut core::ffi::c_void, drivertype : super::Direct3D:: D3D_DRIVER_TYPE, software : crate::Foundation:: HMODULE, flags : D3D11_CREATE_DEVICE_FLAG, pfeaturelevels : *const super::Direct3D:: D3D_FEATURE_LEVEL, featurelevels : u32, sdkversion : u32, pswapchaindesc : *const crate::Dxgi:: DXGI_SWAP_CHAIN_DESC, ppswapchain : *mut * mut core::ffi::c_void, ppdevice : *mut * mut core::ffi::c_void, pfeaturelevel : *mut super::Direct3D:: D3D_FEATURE_LEVEL, ppimmediatecontext : *mut * mut core::ffi::c_void) -> windows_core::HRESULT);
     unsafe {
         D3D11CreateDeviceAndSwapChain(
             padapter.param().abi(),
@@ -347,8 +349,8 @@ impl Default for D3D11_AES_CTR_IV {
 }
 pub const D3D11_ANISOTROPIC_FILTERING_BIT: u32 = 64u32;
 pub const D3D11_APPEND_ALIGNED_ELEMENT: u32 = 4294967295u32;
-pub const D3D11_APPNAME_STRING: windows_core::PCWSTR = windows_core::w!("Name");
-pub const D3D11_APPSIZE_STRING: windows_core::PCWSTR = windows_core::w!("Size");
+pub const D3D11_APPNAME_STRING: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("Name");
+pub const D3D11_APPSIZE_STRING: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("Size");
 pub const D3D11_ARRAY_AXIS_ADDRESS_RANGE_BIT_COUNT: u32 = 9u32;
 pub const D3D11_ASYNC_GETDATA_DONOTFLUSH: D3D11_ASYNC_GETDATA_FLAG = D3D11_ASYNC_GETDATA_FLAG(1i32);
 #[repr(transparent)]
@@ -862,10 +864,10 @@ impl Default for D3D11_BOX {
         unsafe { core::mem::zeroed() }
     }
 }
-pub const D3D11_BREAKON_CATEGORY: windows_core::PCWSTR = windows_core::w!("BreakOn_CATEGORY_%s");
-pub const D3D11_BREAKON_ID_DECIMAL: windows_core::PCWSTR = windows_core::w!("BreakOn_ID_%d");
-pub const D3D11_BREAKON_ID_STRING: windows_core::PCWSTR = windows_core::w!("BreakOn_ID_%s");
-pub const D3D11_BREAKON_SEVERITY: windows_core::PCWSTR = windows_core::w!("BreakOn_SEVERITY_%s");
+pub const D3D11_BREAKON_CATEGORY: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("BreakOn_CATEGORY_%s");
+pub const D3D11_BREAKON_ID_DECIMAL: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("BreakOn_ID_%d");
+pub const D3D11_BREAKON_ID_STRING: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("BreakOn_ID_%s");
+pub const D3D11_BREAKON_SEVERITY: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("BreakOn_SEVERITY_%s");
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_BUFFEREX_SRV {
@@ -1702,8 +1704,8 @@ pub const D3D11_DS_INPUT_PRIMITIVE_ID_REGISTER_READ_PORTS: u32 = 1u32;
 pub const D3D11_DS_OUTPUT_REGISTER_COMPONENTS: u32 = 4u32;
 pub const D3D11_DS_OUTPUT_REGISTER_COMPONENT_BIT_COUNT: u32 = 32u32;
 pub const D3D11_DS_OUTPUT_REGISTER_COUNT: u32 = 32u32;
-pub const D3D11_ENABLE_BREAK_ON_MESSAGE: windows_core::PCWSTR =
-    windows_core::w!("EnableBreakOnMessage");
+pub const D3D11_ENABLE_BREAK_ON_MESSAGE: crate::core_supplemental::PCWSTR =
+    crate::core_supplemental::w!("EnableBreakOnMessage");
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_ENCRYPTED_BLOCK_INFO {
@@ -2119,9 +2121,9 @@ pub const D3D11_FLOAT_TO_SRGB_OFFSET: f32 = 0.055f32;
 pub const D3D11_FLOAT_TO_SRGB_SCALE_1: f32 = 12.92f32;
 pub const D3D11_FLOAT_TO_SRGB_SCALE_2: f32 = 1.055f32;
 pub const D3D11_FLOAT_TO_SRGB_THRESHOLD: f32 = 0.0031308f32;
-pub const D3D11_FORCE_DEBUGGABLE: windows_core::PCWSTR = windows_core::w!("ForceDebuggable");
-pub const D3D11_FORCE_SHADER_SKIP_OPTIMIZATION: windows_core::PCWSTR =
-    windows_core::w!("ForceShaderSkipOptimization");
+pub const D3D11_FORCE_DEBUGGABLE: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("ForceDebuggable");
+pub const D3D11_FORCE_SHADER_SKIP_OPTIMIZATION: crate::core_supplemental::PCWSTR =
+    crate::core_supplemental::w!("ForceShaderSkipOptimization");
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub struct D3D11_FORMAT_SUPPORT(pub i32);
@@ -2205,7 +2207,7 @@ pub const D3D11_FTOU_INSTRUCTION_MIN_INPUT: f32 = 0f32;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_FUNCTION_DESC {
     pub Version: u32,
-    pub Creator: windows_core::PCSTR,
+    pub Creator: crate::core_supplemental::PCSTR,
     pub Flags: u32,
     pub ConstantBuffers: u32,
     pub BoundResources: u32,
@@ -2232,7 +2234,7 @@ pub struct D3D11_FUNCTION_DESC {
     pub BitwiseInstructionCount: u32,
     pub MinFeatureLevel: super::Direct3D::D3D_FEATURE_LEVEL,
     pub RequiredFeatureFlags: u64,
-    pub Name: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
     pub FunctionParameterCount: i32,
     pub HasReturn: crate::Foundation::BOOL,
     pub Has10Level9VertexShader: crate::Foundation::BOOL,
@@ -2337,8 +2339,8 @@ pub const D3D11_IA_VERTEX_ID_BIT_COUNT: u32 = 32u32;
 pub const D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT: u32 = 32u32;
 pub const D3D11_IA_VERTEX_INPUT_STRUCTURE_ELEMENTS_COMPONENTS: u32 = 128u32;
 pub const D3D11_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT: u32 = 32u32;
-pub const D3D11_INFOQUEUE_STORAGE_FILTER_OVERRIDE: windows_core::PCWSTR =
-    windows_core::w!("InfoQueueStorageFilterOverride");
+pub const D3D11_INFOQUEUE_STORAGE_FILTER_OVERRIDE: crate::core_supplemental::PCWSTR =
+    crate::core_supplemental::w!("InfoQueueStorageFilterOverride");
 pub const D3D11_INFO_QUEUE_DEFAULT_MESSAGE_COUNT_LIMIT: u32 = 1024u32;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -2373,7 +2375,7 @@ pub struct D3D11_INPUT_CLASSIFICATION(pub i32);
 #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_INPUT_ELEMENT_DESC {
-    pub SemanticName: windows_core::PCSTR,
+    pub SemanticName: crate::core_supplemental::PCSTR,
     pub SemanticIndex: u32,
     pub Format: crate::Dxgi::Common::DXGI_FORMAT,
     pub InputSlot: u32,
@@ -2442,7 +2444,7 @@ pub const D3D11_KEY_EXCHANGE_RSAES_OAEP: windows_core::GUID =
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_LIBRARY_DESC {
-    pub Creator: windows_core::PCSTR,
+    pub Creator: crate::core_supplemental::PCSTR,
     pub Flags: u32,
     pub FunctionCount: u32,
 }
@@ -5031,11 +5033,11 @@ pub const D3D11_MIP_LOD_BIAS_MIN: f32 = -16f32;
 pub const D3D11_MIP_LOD_FRACTIONAL_BIT_COUNT: u32 = 8u32;
 pub const D3D11_MIP_LOD_RANGE_BIT_COUNT: u32 = 8u32;
 pub const D3D11_MULTISAMPLE_ANTIALIAS_LINE_WIDTH: f32 = 1.4f32;
-pub const D3D11_MUTE_CATEGORY: windows_core::PCWSTR = windows_core::w!("Mute_CATEGORY_%s");
-pub const D3D11_MUTE_DEBUG_OUTPUT: windows_core::PCWSTR = windows_core::w!("MuteDebugOutput");
-pub const D3D11_MUTE_ID_DECIMAL: windows_core::PCWSTR = windows_core::w!("Mute_ID_%d");
-pub const D3D11_MUTE_ID_STRING: windows_core::PCWSTR = windows_core::w!("Mute_ID_%s");
-pub const D3D11_MUTE_SEVERITY: windows_core::PCWSTR = windows_core::w!("Mute_SEVERITY_%s");
+pub const D3D11_MUTE_CATEGORY: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("Mute_CATEGORY_%s");
+pub const D3D11_MUTE_DEBUG_OUTPUT: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("MuteDebugOutput");
+pub const D3D11_MUTE_ID_DECIMAL: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("Mute_ID_%d");
+pub const D3D11_MUTE_ID_STRING: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("Mute_ID_%s");
+pub const D3D11_MUTE_SEVERITY: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("Mute_SEVERITY_%s");
 pub const D3D11_NONSAMPLE_FETCH_OUT_OF_RANGE_ACCESS_RESULT: u32 = 0u32;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -5065,8 +5067,8 @@ pub const D3D11_PACKED_TILE: u32 = 4294967295u32;
 #[cfg(feature = "Win32_Graphics_Direct3D")]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_PARAMETER_DESC {
-    pub Name: windows_core::PCSTR,
-    pub SemanticName: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
+    pub SemanticName: crate::core_supplemental::PCSTR,
     pub Type: super::Direct3D::D3D_SHADER_VARIABLE_TYPE,
     pub Class: super::Direct3D::D3D_SHADER_VARIABLE_CLASS,
     pub Rows: u32,
@@ -5282,8 +5284,8 @@ impl Default for D3D11_RASTERIZER_DESC2 {
     }
 }
 pub const D3D11_RAW_UAV_SRV_BYTE_ALIGNMENT: u32 = 16u32;
-pub const D3D11_REGKEY_PATH: windows_core::PCWSTR =
-    windows_core::w!("Software\\Microsoft\\Direct3D");
+pub const D3D11_REGKEY_PATH: crate::core_supplemental::PCWSTR =
+    crate::core_supplemental::w!("Software\\Microsoft\\Direct3D");
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_RENDER_TARGET_BLEND_DESC {
@@ -5573,7 +5575,7 @@ pub const D3D11_SDK_VERSION: u32 = 7u32;
 #[cfg(feature = "Win32_Graphics_Direct3D")]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_SHADER_BUFFER_DESC {
-    pub Name: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
     pub Type: super::Direct3D::D3D_CBUFFER_TYPE,
     pub Variables: u32,
     pub Size: u32,
@@ -5599,7 +5601,7 @@ pub const D3D11_SHADER_CACHE_SUPPORT_NONE: D3D11_SHADER_CACHE_SUPPORT_FLAGS =
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_SHADER_DESC {
     pub Version: u32,
-    pub Creator: windows_core::PCSTR,
+    pub Creator: crate::core_supplemental::PCSTR,
     pub Flags: u32,
     pub ConstantBuffers: u32,
     pub BoundResources: u32,
@@ -5647,7 +5649,7 @@ impl Default for D3D11_SHADER_DESC {
 #[cfg(feature = "Win32_Graphics_Direct3D")]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_SHADER_INPUT_BIND_DESC {
-    pub Name: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
     pub Type: super::Direct3D::D3D_SHADER_INPUT_TYPE,
     pub BindPoint: u32,
     pub BindCount: u32,
@@ -5866,7 +5868,7 @@ pub struct D3D11_SHADER_TYPE_DESC {
     pub Elements: u32,
     pub Members: u32,
     pub Offset: u32,
-    pub Name: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
 }
 #[cfg(feature = "Win32_Graphics_Direct3D")]
 impl Default for D3D11_SHADER_TYPE_DESC {
@@ -5877,7 +5879,7 @@ impl Default for D3D11_SHADER_TYPE_DESC {
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_SHADER_VARIABLE_DESC {
-    pub Name: windows_core::PCSTR,
+    pub Name: crate::core_supplemental::PCSTR,
     pub StartOffset: u32,
     pub Size: u32,
     pub uFlags: u32,
@@ -5919,7 +5921,7 @@ pub const D3D11_SHVER_VERTEX_SHADER: D3D11_SHADER_VERSION_TYPE = D3D11_SHADER_VE
 #[cfg(feature = "Win32_Graphics_Direct3D")]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_SIGNATURE_PARAMETER_DESC {
-    pub SemanticName: windows_core::PCSTR,
+    pub SemanticName: crate::core_supplemental::PCSTR,
     pub SemanticIndex: u32,
     pub Register: u32,
     pub SystemValueType: super::Direct3D::D3D_NAME,
@@ -5944,7 +5946,7 @@ pub const D3D11_SO_DDI_REGISTER_INDEX_DENOTING_GAP: u32 = 4294967295u32;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3D11_SO_DECLARATION_ENTRY {
     pub Stream: u32,
-    pub SemanticName: windows_core::PCSTR,
+    pub SemanticName: crate::core_supplemental::PCSTR,
     pub SemanticIndex: u32,
     pub StartComponent: u8,
     pub ComponentCount: u8,
@@ -6831,8 +6833,8 @@ pub const D3D11_UAV_DIMENSION_TEXTURE2DARRAY: D3D11_UAV_DIMENSION = D3D11_UAV_DI
 pub const D3D11_UAV_DIMENSION_TEXTURE3D: D3D11_UAV_DIMENSION = D3D11_UAV_DIMENSION(8i32);
 pub const D3D11_UAV_DIMENSION_UNKNOWN: D3D11_UAV_DIMENSION = D3D11_UAV_DIMENSION(0i32);
 pub const D3D11_UNBOUND_MEMORY_ACCESS_RESULT: u32 = 0u32;
-pub const D3D11_UNMUTE_SEVERITY_INFO: windows_core::PCWSTR =
-    windows_core::w!("Unmute_SEVERITY_INFO");
+pub const D3D11_UNMUTE_SEVERITY_INFO: crate::core_supplemental::PCWSTR =
+    crate::core_supplemental::w!("Unmute_SEVERITY_INFO");
 #[repr(C)]
 #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 #[derive(Clone, Copy)]
@@ -7735,9 +7737,9 @@ pub const D3D11_VS_OUTPUT_REGISTER_COUNT: u32 = 32u32;
 pub const D3D11_WHQL_CONTEXT_COUNT_FOR_RESOURCE_LIMIT: u32 = 10u32;
 pub const D3D11_WHQL_DRAWINDEXED_INDEX_COUNT_2_TO_EXP: u32 = 25u32;
 pub const D3D11_WHQL_DRAW_VERTEX_COUNT_2_TO_EXP: u32 = 25u32;
-pub const D3DCSX_DLL: windows_core::PCWSTR = windows_core::w!("d3dcsx_47.dll");
-pub const D3DCSX_DLL_A: windows_core::PCSTR = windows_core::s!("d3dcsx_47.dll");
-pub const D3DCSX_DLL_W: windows_core::PCWSTR = windows_core::w!("d3dcsx_47.dll");
+pub const D3DCSX_DLL: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("d3dcsx_47.dll");
+pub const D3DCSX_DLL_A: crate::core_supplemental::PCSTR = crate::core_supplemental::s!("d3dcsx_47.dll");
+pub const D3DCSX_DLL_W: crate::core_supplemental::PCWSTR = crate::core_supplemental::w!("d3dcsx_47.dll");
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct D3DX11_FFT_BUFFER_INFO {
@@ -8235,7 +8237,7 @@ impl ID3D11ClassInstance {
     }
     pub unsafe fn GetInstanceName(
         &self,
-        pinstancename: Option<windows_core::PSTR>,
+        pinstancename: Option<crate::core_supplemental::PSTR>,
         pbufferlength: *mut usize,
     ) {
         unsafe {
@@ -8248,7 +8250,7 @@ impl ID3D11ClassInstance {
     }
     pub unsafe fn GetTypeName(
         &self,
-        ptypename: Option<windows_core::PSTR>,
+        ptypename: Option<crate::core_supplemental::PSTR>,
         pbufferlength: *mut usize,
     ) {
         unsafe {
@@ -8267,15 +8269,15 @@ pub struct ID3D11ClassInstance_Vtbl {
         unsafe extern "system" fn(*mut core::ffi::c_void, *mut *mut core::ffi::c_void),
     pub GetDesc: unsafe extern "system" fn(*mut core::ffi::c_void, *mut D3D11_CLASS_INSTANCE_DESC),
     pub GetInstanceName:
-        unsafe extern "system" fn(*mut core::ffi::c_void, windows_core::PSTR, *mut usize),
+        unsafe extern "system" fn(*mut core::ffi::c_void, crate::core_supplemental::PSTR, *mut usize),
     pub GetTypeName:
-        unsafe extern "system" fn(*mut core::ffi::c_void, windows_core::PSTR, *mut usize),
+        unsafe extern "system" fn(*mut core::ffi::c_void, crate::core_supplemental::PSTR, *mut usize),
 }
 pub trait ID3D11ClassInstance_Impl: ID3D11DeviceChild_Impl {
     fn GetClassLinkage(&self, pplinkage: windows_core::OutRef<'_, ID3D11ClassLinkage>);
     fn GetDesc(&self, pdesc: *mut D3D11_CLASS_INSTANCE_DESC);
-    fn GetInstanceName(&self, pinstancename: windows_core::PSTR, pbufferlength: *mut usize);
-    fn GetTypeName(&self, ptypename: windows_core::PSTR, pbufferlength: *mut usize);
+    fn GetInstanceName(&self, pinstancename: crate::core_supplemental::PSTR, pbufferlength: *mut usize);
+    fn GetTypeName(&self, ptypename: crate::core_supplemental::PSTR, pbufferlength: *mut usize);
 }
 impl ID3D11ClassInstance_Vtbl {
     pub const fn new<Identity: ID3D11ClassInstance_Impl, const OFFSET: isize>() -> Self {
@@ -8313,7 +8315,7 @@ impl ID3D11ClassInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pinstancename: windows_core::PSTR,
+            pinstancename: crate::core_supplemental::PSTR,
             pbufferlength: *mut usize,
         ) {
             unsafe {
@@ -8331,7 +8333,7 @@ impl ID3D11ClassInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            ptypename: windows_core::PSTR,
+            ptypename: crate::core_supplemental::PSTR,
             pbufferlength: *mut usize,
         ) {
             unsafe {
@@ -8383,7 +8385,7 @@ impl ID3D11ClassLinkage {
         instanceindex: u32,
     ) -> windows_core::Result<ID3D11ClassInstance>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
@@ -8405,7 +8407,7 @@ impl ID3D11ClassLinkage {
         sampleroffset: u32,
     ) -> windows_core::Result<ID3D11ClassInstance>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
@@ -8427,13 +8429,13 @@ pub struct ID3D11ClassLinkage_Vtbl {
     pub base__: ID3D11DeviceChild_Vtbl,
     pub GetClassInstance: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         *mut *mut core::ffi::c_void,
     ) -> windows_core::HRESULT,
     pub CreateClassInstance: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         u32,
         u32,
@@ -8444,12 +8446,12 @@ pub struct ID3D11ClassLinkage_Vtbl {
 pub trait ID3D11ClassLinkage_Impl: ID3D11DeviceChild_Impl {
     fn GetClassInstance(
         &self,
-        pclassinstancename: &windows_core::PCSTR,
+        pclassinstancename: &crate::core_supplemental::PCSTR,
         instanceindex: u32,
     ) -> windows_core::Result<ID3D11ClassInstance>;
     fn CreateClassInstance(
         &self,
-        pclasstypename: &windows_core::PCSTR,
+        pclasstypename: &crate::core_supplemental::PCSTR,
         constantbufferoffset: u32,
         constantvectoroffset: u32,
         textureoffset: u32,
@@ -8463,7 +8465,7 @@ impl ID3D11ClassLinkage_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pclassinstancename: windows_core::PCSTR,
+            pclassinstancename: crate::core_supplemental::PCSTR,
             instanceindex: u32,
             ppinstance: *mut *mut core::ffi::c_void,
         ) -> windows_core::HRESULT {
@@ -8488,7 +8490,7 @@ impl ID3D11ClassLinkage_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pclasstypename: windows_core::PCSTR,
+            pclasstypename: crate::core_supplemental::PCSTR,
             constantbufferoffset: u32,
             constantvectoroffset: u32,
             textureoffset: u32,
@@ -9845,11 +9847,11 @@ impl ID3D11Device {
         pdesc: *const D3D11_COUNTER_DESC,
         ptype: *mut D3D11_COUNTER_TYPE,
         pactivecounters: *mut u32,
-        szname: Option<windows_core::PSTR>,
+        szname: Option<crate::core_supplemental::PSTR>,
         pnamelength: Option<*mut u32>,
-        szunits: Option<windows_core::PSTR>,
+        szunits: Option<crate::core_supplemental::PSTR>,
         punitslength: Option<*mut u32>,
-        szdescription: Option<windows_core::PSTR>,
+        szdescription: Option<crate::core_supplemental::PSTR>,
         pdescriptionlength: Option<*mut u32>,
     ) -> windows_core::Result<()> {
         unsafe {
@@ -10201,11 +10203,11 @@ pub struct ID3D11Device_Vtbl {
         *const D3D11_COUNTER_DESC,
         *mut D3D11_COUNTER_TYPE,
         *mut u32,
-        windows_core::PSTR,
+        crate::core_supplemental::PSTR,
         *mut u32,
-        windows_core::PSTR,
+        crate::core_supplemental::PSTR,
         *mut u32,
-        windows_core::PSTR,
+        crate::core_supplemental::PSTR,
         *mut u32,
     ) -> windows_core::HRESULT,
     pub CheckFeatureSupport: unsafe extern "system" fn(
@@ -10422,11 +10424,11 @@ pub trait ID3D11Device_Impl: windows_core::IUnknownImpl {
         pdesc: *const D3D11_COUNTER_DESC,
         ptype: *mut D3D11_COUNTER_TYPE,
         pactivecounters: *mut u32,
-        szname: windows_core::PSTR,
+        szname: crate::core_supplemental::PSTR,
         pnamelength: *mut u32,
-        szunits: windows_core::PSTR,
+        szunits: crate::core_supplemental::PSTR,
         punitslength: *mut u32,
-        szdescription: windows_core::PSTR,
+        szdescription: crate::core_supplemental::PSTR,
         pdescriptionlength: *mut u32,
     ) -> windows_core::Result<()>;
     fn CheckFeatureSupport(
@@ -11084,11 +11086,11 @@ impl ID3D11Device_Vtbl {
             pdesc: *const D3D11_COUNTER_DESC,
             ptype: *mut D3D11_COUNTER_TYPE,
             pactivecounters: *mut u32,
-            szname: windows_core::PSTR,
+            szname: crate::core_supplemental::PSTR,
             pnamelength: *mut u32,
-            szunits: windows_core::PSTR,
+            szunits: crate::core_supplemental::PSTR,
             punitslength: *mut u32,
-            szdescription: windows_core::PSTR,
+            szdescription: crate::core_supplemental::PSTR,
             pdescriptionlength: *mut u32,
         ) -> windows_core::HRESULT {
             unsafe {
@@ -11448,7 +11450,7 @@ impl ID3D11Device1 {
         dwdesiredaccess: u32,
     ) -> windows_core::Result<T>
     where
-        P0: windows_core::Param<windows_core::PCWSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCWSTR>,
         T: windows_core::Interface,
     {
         let mut result__ = core::ptr::null_mut();
@@ -11505,7 +11507,7 @@ pub struct ID3D11Device1_Vtbl {
     ) -> windows_core::HRESULT,
     pub OpenSharedResourceByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCWSTR,
+        crate::core_supplemental::PCWSTR,
         u32,
         *const windows_core::GUID,
         *mut *mut core::ffi::c_void,
@@ -11553,7 +11555,7 @@ pub trait ID3D11Device1_Impl: ID3D11Device_Impl {
     ) -> windows_core::Result<()>;
     fn OpenSharedResourceByName(
         &self,
-        lpname: &windows_core::PCWSTR,
+        lpname: &crate::core_supplemental::PCWSTR,
         dwdesiredaccess: u32,
         returnedinterface: *const windows_core::GUID,
         ppresource: *mut *mut core::ffi::c_void,
@@ -11693,7 +11695,7 @@ impl ID3D11Device1_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            lpname: windows_core::PCWSTR,
+            lpname: crate::core_supplemental::PCWSTR,
             dwdesiredaccess: u32,
             returnedinterface: *const windows_core::GUID,
             ppresource: *mut *mut core::ffi::c_void,
@@ -19455,7 +19457,7 @@ impl ID3D11DeviceContext2 {
     }
     pub unsafe fn SetMarkerInt<P0>(&self, plabel: P0, data: i32)
     where
-        P0: windows_core::Param<windows_core::PCWSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCWSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).SetMarkerInt)(
@@ -19467,7 +19469,7 @@ impl ID3D11DeviceContext2 {
     }
     pub unsafe fn BeginEventInt<P0>(&self, plabel: P0, data: i32)
     where
-        P0: windows_core::Param<windows_core::PCWSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCWSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BeginEventInt)(
@@ -19537,8 +19539,8 @@ pub struct ID3D11DeviceContext2_Vtbl {
     ),
     pub IsAnnotationEnabled:
         unsafe extern "system" fn(*mut core::ffi::c_void) -> crate::Foundation::BOOL,
-    pub SetMarkerInt: unsafe extern "system" fn(*mut core::ffi::c_void, windows_core::PCWSTR, i32),
-    pub BeginEventInt: unsafe extern "system" fn(*mut core::ffi::c_void, windows_core::PCWSTR, i32),
+    pub SetMarkerInt: unsafe extern "system" fn(*mut core::ffi::c_void, crate::core_supplemental::PCWSTR, i32),
+    pub BeginEventInt: unsafe extern "system" fn(*mut core::ffi::c_void, crate::core_supplemental::PCWSTR, i32),
     pub EndEvent: unsafe extern "system" fn(*mut core::ffi::c_void),
 }
 #[cfg(all(
@@ -19596,8 +19598,8 @@ pub trait ID3D11DeviceContext2_Impl: ID3D11DeviceContext1_Impl {
         ptiledresourceorviewaccessafterbarrier: windows_core::Ref<'_, ID3D11DeviceChild>,
     );
     fn IsAnnotationEnabled(&self) -> crate::Foundation::BOOL;
-    fn SetMarkerInt(&self, plabel: &windows_core::PCWSTR, data: i32);
-    fn BeginEventInt(&self, plabel: &windows_core::PCWSTR, data: i32);
+    fn SetMarkerInt(&self, plabel: &crate::core_supplemental::PCWSTR, data: i32);
+    fn BeginEventInt(&self, plabel: &crate::core_supplemental::PCWSTR, data: i32);
     fn EndEvent(&self);
 }
 #[cfg(all(
@@ -19772,7 +19774,7 @@ impl ID3D11DeviceContext2_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            plabel: windows_core::PCWSTR,
+            plabel: crate::core_supplemental::PCWSTR,
             data: i32,
         ) {
             unsafe {
@@ -19790,7 +19792,7 @@ impl ID3D11DeviceContext2_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            plabel: windows_core::PCWSTR,
+            plabel: crate::core_supplemental::PCWSTR,
             data: i32,
         ) {
             unsafe {
@@ -20216,7 +20218,7 @@ impl ID3D11Fence {
         lpname: P2,
     ) -> windows_core::Result<crate::Foundation::HANDLE>
     where
-        P2: windows_core::Param<windows_core::PCWSTR>,
+        P2: windows_core::Param<crate::core_supplemental::PCWSTR>,
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
@@ -20260,7 +20262,7 @@ pub struct ID3D11Fence_Vtbl {
         *mut core::ffi::c_void,
         *const crate::Security::SECURITY_ATTRIBUTES,
         u32,
-        windows_core::PCWSTR,
+        crate::core_supplemental::PCWSTR,
         *mut crate::Foundation::HANDLE,
     ) -> windows_core::HRESULT,
     #[cfg(not(feature = "Win32_Security"))]
@@ -20278,7 +20280,7 @@ pub trait ID3D11Fence_Impl: ID3D11DeviceChild_Impl {
         &self,
         pattributes: *const crate::Security::SECURITY_ATTRIBUTES,
         dwaccess: u32,
-        lpname: &windows_core::PCWSTR,
+        lpname: &crate::core_supplemental::PCWSTR,
     ) -> windows_core::Result<crate::Foundation::HANDLE>;
     fn GetCompletedValue(&self) -> u64;
     fn SetEventOnCompletion(
@@ -20297,7 +20299,7 @@ impl ID3D11Fence_Vtbl {
             this: *mut core::ffi::c_void,
             pattributes: *const crate::Security::SECURITY_ATTRIBUTES,
             dwaccess: u32,
-            lpname: windows_core::PCWSTR,
+            lpname: crate::core_supplemental::PCWSTR,
             phandle: *mut crate::Foundation::HANDLE,
         ) -> windows_core::HRESULT {
             unsafe {
@@ -20427,9 +20429,9 @@ impl ID3D11FunctionLinkingGraph {
         pfunctionname: P2,
     ) -> windows_core::Result<ID3D11LinkingNode>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
         P1: windows_core::Param<ID3D11Module>,
-        P2: windows_core::Param<windows_core::PCSTR>,
+        P2: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
@@ -20476,9 +20478,9 @@ impl ID3D11FunctionLinkingGraph {
     ) -> windows_core::Result<()>
     where
         P0: windows_core::Param<ID3D11LinkingNode>,
-        P2: windows_core::Param<windows_core::PCSTR>,
+        P2: windows_core::Param<crate::core_supplemental::PCSTR>,
         P3: windows_core::Param<ID3D11LinkingNode>,
-        P5: windows_core::Param<windows_core::PCSTR>,
+        P5: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).PassValueWithSwizzle)(
@@ -20553,9 +20555,9 @@ pub struct ID3D11FunctionLinkingGraph_Vtbl {
     SetOutputSignature: usize,
     pub CallFunction: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *mut *mut core::ffi::c_void,
     ) -> windows_core::HRESULT,
     pub PassValue: unsafe extern "system" fn(
@@ -20569,10 +20571,10 @@ pub struct ID3D11FunctionLinkingGraph_Vtbl {
         *mut core::ffi::c_void,
         *mut core::ffi::c_void,
         i32,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *mut core::ffi::c_void,
         i32,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> windows_core::HRESULT,
     #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetLastError: unsafe extern "system" fn(
@@ -20609,9 +20611,9 @@ pub trait ID3D11FunctionLinkingGraph_Impl: windows_core::IUnknownImpl {
     ) -> windows_core::Result<ID3D11LinkingNode>;
     fn CallFunction(
         &self,
-        pmoduleinstancenamespace: &windows_core::PCSTR,
+        pmoduleinstancenamespace: &crate::core_supplemental::PCSTR,
         pmodulewithfunctionprototype: windows_core::Ref<'_, ID3D11Module>,
-        pfunctionname: &windows_core::PCSTR,
+        pfunctionname: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<ID3D11LinkingNode>;
     fn PassValue(
         &self,
@@ -20624,10 +20626,10 @@ pub trait ID3D11FunctionLinkingGraph_Impl: windows_core::IUnknownImpl {
         &self,
         psrcnode: windows_core::Ref<'_, ID3D11LinkingNode>,
         srcparameterindex: i32,
-        psrcswizzle: &windows_core::PCSTR,
+        psrcswizzle: &crate::core_supplemental::PCSTR,
         pdstnode: windows_core::Ref<'_, ID3D11LinkingNode>,
         dstparameterindex: i32,
-        pdstswizzle: &windows_core::PCSTR,
+        pdstswizzle: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<()>;
     fn GetLastError(
         &self,
@@ -20712,9 +20714,9 @@ impl ID3D11FunctionLinkingGraph_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pmoduleinstancenamespace: windows_core::PCSTR,
+            pmoduleinstancenamespace: crate::core_supplemental::PCSTR,
             pmodulewithfunctionprototype: *mut core::ffi::c_void,
-            pfunctionname: windows_core::PCSTR,
+            pfunctionname: crate::core_supplemental::PCSTR,
             ppcallnode: *mut *mut core::ffi::c_void,
         ) -> windows_core::HRESULT {
             unsafe {
@@ -20764,10 +20766,10 @@ impl ID3D11FunctionLinkingGraph_Vtbl {
             this: *mut core::ffi::c_void,
             psrcnode: *mut core::ffi::c_void,
             srcparameterindex: i32,
-            psrcswizzle: windows_core::PCSTR,
+            psrcswizzle: crate::core_supplemental::PCSTR,
             pdstnode: *mut core::ffi::c_void,
             dstparameterindex: i32,
-            pdstswizzle: windows_core::PCSTR,
+            pdstswizzle: crate::core_supplemental::PCSTR,
         ) -> windows_core::HRESULT {
             unsafe {
                 let this: &Identity =
@@ -20953,7 +20955,7 @@ impl ID3D11FunctionReflection {
         name: P0,
     ) -> Option<ID3D11ShaderReflectionConstantBuffer>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetConstantBufferByName)(
@@ -20979,7 +20981,7 @@ impl ID3D11FunctionReflection {
     }
     pub unsafe fn GetVariableByName<P0>(&self, name: P0) -> Option<ID3D11ShaderReflectionVariable>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetVariableByName)(
@@ -20995,7 +20997,7 @@ impl ID3D11FunctionReflection {
         pdesc: *mut D3D11_SHADER_INPUT_BIND_DESC,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetResourceBindingDescByName)(
@@ -21035,7 +21037,7 @@ pub struct ID3D11FunctionReflection_Vtbl {
     pub GetConstantBufferByName:
         unsafe extern "system" fn(
             *mut core::ffi::c_void,
-            windows_core::PCSTR,
+            crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionConstantBuffer>,
     #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDesc: unsafe extern "system" fn(
@@ -21047,12 +21049,12 @@ pub struct ID3D11FunctionReflection_Vtbl {
     GetResourceBindingDesc: usize,
     pub GetVariableByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionVariable>,
     #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDescByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *mut D3D11_SHADER_INPUT_BIND_DESC,
     ) -> windows_core::HRESULT,
     #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
@@ -21072,7 +21074,7 @@ pub trait ID3D11FunctionReflection_Impl {
     ) -> Option<ID3D11ShaderReflectionConstantBuffer>;
     fn GetConstantBufferByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionConstantBuffer>;
     fn GetResourceBindingDesc(
         &self,
@@ -21081,11 +21083,11 @@ pub trait ID3D11FunctionReflection_Impl {
     ) -> windows_core::Result<()>;
     fn GetVariableByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionVariable>;
     fn GetResourceBindingDescByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
         pdesc: *mut D3D11_SHADER_INPUT_BIND_DESC,
     ) -> windows_core::Result<()>;
     fn GetFunctionParameter(
@@ -21126,7 +21128,7 @@ impl ID3D11FunctionReflection_Vtbl {
             Identity: ID3D11FunctionReflection_Impl,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionConstantBuffer> {
             unsafe {
                 let this = (this as *mut *mut core::ffi::c_void) as *const windows_core::ScopedHeap;
@@ -21157,7 +21159,7 @@ impl ID3D11FunctionReflection_Vtbl {
         }
         unsafe extern "system" fn GetVariableByName<Identity: ID3D11FunctionReflection_Impl>(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionVariable> {
             unsafe {
                 let this = (this as *mut *mut core::ffi::c_void) as *const windows_core::ScopedHeap;
@@ -21169,7 +21171,7 @@ impl ID3D11FunctionReflection_Vtbl {
             Identity: ID3D11FunctionReflection_Impl,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
             pdesc: *mut D3D11_SHADER_INPUT_BIND_DESC,
         ) -> windows_core::HRESULT {
             unsafe {
@@ -21541,7 +21543,7 @@ impl ID3D11InfoQueue {
         pdescription: P3,
     ) -> windows_core::Result<()>
     where
-        P3: windows_core::Param<windows_core::PCSTR>,
+        P3: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).AddMessage)(
@@ -21560,7 +21562,7 @@ impl ID3D11InfoQueue {
         pdescription: P1,
     ) -> windows_core::Result<()>
     where
-        P1: windows_core::Param<windows_core::PCSTR>,
+        P1: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).AddApplicationMessage)(
@@ -21726,12 +21728,12 @@ pub struct ID3D11InfoQueue_Vtbl {
         D3D11_MESSAGE_CATEGORY,
         D3D11_MESSAGE_SEVERITY,
         D3D11_MESSAGE_ID,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> windows_core::HRESULT,
     pub AddApplicationMessage: unsafe extern "system" fn(
         *mut core::ffi::c_void,
         D3D11_MESSAGE_SEVERITY,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> windows_core::HRESULT,
     pub SetBreakOnCategory: unsafe extern "system" fn(
         *mut core::ffi::c_void,
@@ -21821,12 +21823,12 @@ pub trait ID3D11InfoQueue_Impl: windows_core::IUnknownImpl {
         category: D3D11_MESSAGE_CATEGORY,
         severity: D3D11_MESSAGE_SEVERITY,
         id: D3D11_MESSAGE_ID,
-        pdescription: &windows_core::PCSTR,
+        pdescription: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<()>;
     fn AddApplicationMessage(
         &self,
         severity: D3D11_MESSAGE_SEVERITY,
-        pdescription: &windows_core::PCSTR,
+        pdescription: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<()>;
     fn SetBreakOnCategory(
         &self,
@@ -22207,7 +22209,7 @@ impl ID3D11InfoQueue_Vtbl {
             category: D3D11_MESSAGE_CATEGORY,
             severity: D3D11_MESSAGE_SEVERITY,
             id: D3D11_MESSAGE_ID,
-            pdescription: windows_core::PCSTR,
+            pdescription: crate::core_supplemental::PCSTR,
         ) -> windows_core::HRESULT {
             unsafe {
                 let this: &Identity =
@@ -22228,7 +22230,7 @@ impl ID3D11InfoQueue_Vtbl {
         >(
             this: *mut core::ffi::c_void,
             severity: D3D11_MESSAGE_SEVERITY,
-            pdescription: windows_core::PCSTR,
+            pdescription: crate::core_supplemental::PCSTR,
         ) -> windows_core::HRESULT {
             unsafe {
                 let this: &Identity =
@@ -22565,8 +22567,8 @@ impl ID3D11Linker {
     ) -> windows_core::Result<()>
     where
         P0: windows_core::Param<ID3D11ModuleInstance>,
-        P1: windows_core::Param<windows_core::PCSTR>,
-        P2: windows_core::Param<windows_core::PCSTR>,
+        P1: windows_core::Param<crate::core_supplemental::PCSTR>,
+        P2: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).Link)(
@@ -22615,8 +22617,8 @@ pub struct ID3D11Linker_Vtbl {
     pub Link: unsafe extern "system" fn(
         *mut core::ffi::c_void,
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         *mut *mut core::ffi::c_void,
         *mut *mut core::ffi::c_void,
@@ -22635,8 +22637,8 @@ pub trait ID3D11Linker_Impl: windows_core::IUnknownImpl {
     fn Link(
         &self,
         pentry: windows_core::Ref<'_, ID3D11ModuleInstance>,
-        pentryname: &windows_core::PCSTR,
-        ptargetname: &windows_core::PCSTR,
+        pentryname: &crate::core_supplemental::PCSTR,
+        ptargetname: &crate::core_supplemental::PCSTR,
         uflags: u32,
         ppshaderblob: windows_core::OutRef<'_, super::Direct3D::ID3DBlob>,
         pperrorbuffer: windows_core::OutRef<'_, super::Direct3D::ID3DBlob>,
@@ -22657,8 +22659,8 @@ impl ID3D11Linker_Vtbl {
         unsafe extern "system" fn Link<Identity: ID3D11Linker_Impl, const OFFSET: isize>(
             this: *mut core::ffi::c_void,
             pentry: *mut core::ffi::c_void,
-            pentryname: windows_core::PCSTR,
-            ptargetname: windows_core::PCSTR,
+            pentryname: crate::core_supplemental::PCSTR,
+            ptargetname: crate::core_supplemental::PCSTR,
             uflags: u32,
             ppshaderblob: *mut *mut core::ffi::c_void,
             pperrorbuffer: *mut *mut core::ffi::c_void,
@@ -22760,7 +22762,7 @@ impl ID3D11Module {
         pnamespace: P0,
     ) -> windows_core::Result<ID3D11ModuleInstance>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             let mut result__ = core::mem::zeroed();
@@ -22778,14 +22780,14 @@ pub struct ID3D11Module_Vtbl {
     pub base__: windows_core::IUnknown_Vtbl,
     pub CreateInstance: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *mut *mut core::ffi::c_void,
     ) -> windows_core::HRESULT,
 }
 pub trait ID3D11Module_Impl: windows_core::IUnknownImpl {
     fn CreateInstance(
         &self,
-        pnamespace: &windows_core::PCSTR,
+        pnamespace: &crate::core_supplemental::PCSTR,
     ) -> windows_core::Result<ID3D11ModuleInstance>;
 }
 impl ID3D11Module_Vtbl {
@@ -22795,7 +22797,7 @@ impl ID3D11Module_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pnamespace: windows_core::PCSTR,
+            pnamespace: crate::core_supplemental::PCSTR,
             ppmoduleinstance: *mut *mut core::ffi::c_void,
         ) -> windows_core::HRESULT {
             unsafe {
@@ -22852,7 +22854,7 @@ impl ID3D11ModuleInstance {
         cbdstoffset: u32,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BindConstantBufferByName)(
@@ -22887,7 +22889,7 @@ impl ID3D11ModuleInstance {
         ucount: u32,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BindResourceByName)(
@@ -22922,7 +22924,7 @@ impl ID3D11ModuleInstance {
         ucount: u32,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BindSamplerByName)(
@@ -22957,7 +22959,7 @@ impl ID3D11ModuleInstance {
         ucount: u32,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BindUnorderedAccessViewByName)(
@@ -22992,7 +22994,7 @@ impl ID3D11ModuleInstance {
         ucount: u32,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BindResourceAsUnorderedAccessViewByName)(
@@ -23012,7 +23014,7 @@ pub struct ID3D11ModuleInstance_Vtbl {
         unsafe extern "system" fn(*mut core::ffi::c_void, u32, u32, u32) -> windows_core::HRESULT,
     pub BindConstantBufferByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         u32,
     ) -> windows_core::HRESULT,
@@ -23020,7 +23022,7 @@ pub struct ID3D11ModuleInstance_Vtbl {
         unsafe extern "system" fn(*mut core::ffi::c_void, u32, u32, u32) -> windows_core::HRESULT,
     pub BindResourceByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         u32,
     ) -> windows_core::HRESULT,
@@ -23028,7 +23030,7 @@ pub struct ID3D11ModuleInstance_Vtbl {
         unsafe extern "system" fn(*mut core::ffi::c_void, u32, u32, u32) -> windows_core::HRESULT,
     pub BindSamplerByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         u32,
     ) -> windows_core::HRESULT,
@@ -23036,7 +23038,7 @@ pub struct ID3D11ModuleInstance_Vtbl {
         unsafe extern "system" fn(*mut core::ffi::c_void, u32, u32, u32) -> windows_core::HRESULT,
     pub BindUnorderedAccessViewByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         u32,
     ) -> windows_core::HRESULT,
@@ -23044,7 +23046,7 @@ pub struct ID3D11ModuleInstance_Vtbl {
         unsafe extern "system" fn(*mut core::ffi::c_void, u32, u32, u32) -> windows_core::HRESULT,
     pub BindResourceAsUnorderedAccessViewByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         u32,
         u32,
     )
@@ -23059,21 +23061,21 @@ pub trait ID3D11ModuleInstance_Impl: windows_core::IUnknownImpl {
     ) -> windows_core::Result<()>;
     fn BindConstantBufferByName(
         &self,
-        pname: &windows_core::PCSTR,
+        pname: &crate::core_supplemental::PCSTR,
         udstslot: u32,
         cbdstoffset: u32,
     ) -> windows_core::Result<()>;
     fn BindResource(&self, usrcslot: u32, udstslot: u32, ucount: u32) -> windows_core::Result<()>;
     fn BindResourceByName(
         &self,
-        pname: &windows_core::PCSTR,
+        pname: &crate::core_supplemental::PCSTR,
         udstslot: u32,
         ucount: u32,
     ) -> windows_core::Result<()>;
     fn BindSampler(&self, usrcslot: u32, udstslot: u32, ucount: u32) -> windows_core::Result<()>;
     fn BindSamplerByName(
         &self,
-        pname: &windows_core::PCSTR,
+        pname: &crate::core_supplemental::PCSTR,
         udstslot: u32,
         ucount: u32,
     ) -> windows_core::Result<()>;
@@ -23085,7 +23087,7 @@ pub trait ID3D11ModuleInstance_Impl: windows_core::IUnknownImpl {
     ) -> windows_core::Result<()>;
     fn BindUnorderedAccessViewByName(
         &self,
-        pname: &windows_core::PCSTR,
+        pname: &crate::core_supplemental::PCSTR,
         udstslot: u32,
         ucount: u32,
     ) -> windows_core::Result<()>;
@@ -23097,7 +23099,7 @@ pub trait ID3D11ModuleInstance_Impl: windows_core::IUnknownImpl {
     ) -> windows_core::Result<()>;
     fn BindResourceAsUnorderedAccessViewByName(
         &self,
-        psrvname: &windows_core::PCSTR,
+        psrvname: &crate::core_supplemental::PCSTR,
         udstuavslot: u32,
         ucount: u32,
     ) -> windows_core::Result<()>;
@@ -23130,7 +23132,7 @@ impl ID3D11ModuleInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pname: windows_core::PCSTR,
+            pname: crate::core_supplemental::PCSTR,
             udstslot: u32,
             cbdstoffset: u32,
         ) -> windows_core::HRESULT {
@@ -23172,7 +23174,7 @@ impl ID3D11ModuleInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pname: windows_core::PCSTR,
+            pname: crate::core_supplemental::PCSTR,
             udstslot: u32,
             ucount: u32,
         ) -> windows_core::HRESULT {
@@ -23214,7 +23216,7 @@ impl ID3D11ModuleInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pname: windows_core::PCSTR,
+            pname: crate::core_supplemental::PCSTR,
             udstslot: u32,
             ucount: u32,
         ) -> windows_core::HRESULT {
@@ -23256,7 +23258,7 @@ impl ID3D11ModuleInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            pname: windows_core::PCSTR,
+            pname: crate::core_supplemental::PCSTR,
             udstslot: u32,
             ucount: u32,
         ) -> windows_core::HRESULT {
@@ -23298,7 +23300,7 @@ impl ID3D11ModuleInstance_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            psrvname: windows_core::PCSTR,
+            psrvname: crate::core_supplemental::PCSTR,
             udstuavslot: u32,
             ucount: u32,
         ) -> windows_core::HRESULT {
@@ -24325,7 +24327,7 @@ impl ID3D11ShaderReflection {
         name: P0,
     ) -> Option<ID3D11ShaderReflectionConstantBuffer>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetConstantBufferByName)(
@@ -24396,7 +24398,7 @@ impl ID3D11ShaderReflection {
     }
     pub unsafe fn GetVariableByName<P0>(&self, name: P0) -> Option<ID3D11ShaderReflectionVariable>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetVariableByName)(
@@ -24412,7 +24414,7 @@ impl ID3D11ShaderReflection {
         pdesc: *mut D3D11_SHADER_INPUT_BIND_DESC,
     ) -> windows_core::Result<()>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetResourceBindingDescByName)(
@@ -24527,7 +24529,7 @@ pub struct ID3D11ShaderReflection_Vtbl {
     pub GetConstantBufferByName:
         unsafe extern "system" fn(
             *mut core::ffi::c_void,
-            windows_core::PCSTR,
+            crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionConstantBuffer>,
     #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDesc: unsafe extern "system" fn(
@@ -24563,12 +24565,12 @@ pub struct ID3D11ShaderReflection_Vtbl {
     GetPatchConstantParameterDesc: usize,
     pub GetVariableByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionVariable>,
     #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDescByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
         *mut D3D11_SHADER_INPUT_BIND_DESC,
     ) -> windows_core::HRESULT,
     #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
@@ -24602,7 +24604,7 @@ pub trait ID3D11ShaderReflection_Impl: windows_core::IUnknownImpl {
     fn GetConstantBufferByIndex(&self, index: u32) -> Option<ID3D11ShaderReflectionConstantBuffer>;
     fn GetConstantBufferByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionConstantBuffer>;
     fn GetResourceBindingDesc(
         &self,
@@ -24626,11 +24628,11 @@ pub trait ID3D11ShaderReflection_Impl: windows_core::IUnknownImpl {
     ) -> windows_core::Result<()>;
     fn GetVariableByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionVariable>;
     fn GetResourceBindingDescByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
         pdesc: *mut D3D11_SHADER_INPUT_BIND_DESC,
     ) -> windows_core::Result<()>;
     fn GetMovInstructionCount(&self) -> u32;
@@ -24681,7 +24683,7 @@ impl ID3D11ShaderReflection_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionConstantBuffer> {
             unsafe {
                 let this: &Identity =
@@ -24773,7 +24775,7 @@ impl ID3D11ShaderReflection_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionVariable> {
             unsafe {
                 let this: &Identity =
@@ -24786,7 +24788,7 @@ impl ID3D11ShaderReflection_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
             pdesc: *mut D3D11_SHADER_INPUT_BIND_DESC,
         ) -> windows_core::HRESULT {
             unsafe {
@@ -24993,7 +24995,7 @@ impl ID3D11ShaderReflectionConstantBuffer {
     }
     pub unsafe fn GetVariableByName<P0>(&self, name: P0) -> Option<ID3D11ShaderReflectionVariable>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetVariableByName)(
@@ -25019,7 +25021,7 @@ pub struct ID3D11ShaderReflectionConstantBuffer_Vtbl {
         -> Option<ID3D11ShaderReflectionVariable>,
     pub GetVariableByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionVariable>,
 }
 #[cfg(feature = "Win32_Graphics_Direct3D")]
@@ -25028,7 +25030,7 @@ pub trait ID3D11ShaderReflectionConstantBuffer_Impl {
     fn GetVariableByIndex(&self, index: u32) -> Option<ID3D11ShaderReflectionVariable>;
     fn GetVariableByName(
         &self,
-        name: &windows_core::PCSTR,
+        name: &crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionVariable>;
 }
 #[cfg(feature = "Win32_Graphics_Direct3D")]
@@ -25067,7 +25069,7 @@ impl ID3D11ShaderReflectionConstantBuffer_Vtbl {
             Identity: ID3D11ShaderReflectionConstantBuffer_Impl,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionVariable> {
             unsafe {
                 let this = (this as *mut *mut core::ffi::c_void) as *const windows_core::ScopedHeap;
@@ -25136,7 +25138,7 @@ impl ID3D11ShaderReflectionType {
     }
     pub unsafe fn GetMemberTypeByName<P0>(&self, name: P0) -> Option<ID3D11ShaderReflectionType>
     where
-        P0: windows_core::Param<windows_core::PCSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).GetMemberTypeByName)(
@@ -25145,7 +25147,7 @@ impl ID3D11ShaderReflectionType {
             )
         }
     }
-    pub unsafe fn GetMemberTypeName(&self, index: u32) -> windows_core::PCSTR {
+    pub unsafe fn GetMemberTypeName(&self, index: u32) -> crate::core_supplemental::PCSTR {
         unsafe {
             (windows_core::Interface::vtable(self).GetMemberTypeName)(
                 windows_core::Interface::as_raw(self),
@@ -25234,10 +25236,10 @@ pub struct ID3D11ShaderReflectionType_Vtbl {
     ) -> Option<ID3D11ShaderReflectionType>,
     pub GetMemberTypeByName: unsafe extern "system" fn(
         *mut core::ffi::c_void,
-        windows_core::PCSTR,
+        crate::core_supplemental::PCSTR,
     ) -> Option<ID3D11ShaderReflectionType>,
     pub GetMemberTypeName:
-        unsafe extern "system" fn(*mut core::ffi::c_void, u32) -> windows_core::PCSTR,
+        unsafe extern "system" fn(*mut core::ffi::c_void, u32) -> crate::core_supplemental::PCSTR,
     pub IsEqual: unsafe extern "system" fn(
         *mut core::ffi::c_void,
         *mut core::ffi::c_void,
@@ -25264,9 +25266,9 @@ pub struct ID3D11ShaderReflectionType_Vtbl {
 pub trait ID3D11ShaderReflectionType_Impl {
     fn GetDesc(&self, pdesc: *mut D3D11_SHADER_TYPE_DESC) -> windows_core::Result<()>;
     fn GetMemberTypeByIndex(&self, index: u32) -> Option<ID3D11ShaderReflectionType>;
-    fn GetMemberTypeByName(&self, name: &windows_core::PCSTR)
+    fn GetMemberTypeByName(&self, name: &crate::core_supplemental::PCSTR)
         -> Option<ID3D11ShaderReflectionType>;
-    fn GetMemberTypeName(&self, index: u32) -> windows_core::PCSTR;
+    fn GetMemberTypeName(&self, index: u32) -> crate::core_supplemental::PCSTR;
     fn IsEqual(
         &self,
         ptype: windows_core::Ref<'_, ID3D11ShaderReflectionType>,
@@ -25315,7 +25317,7 @@ impl ID3D11ShaderReflectionType_Vtbl {
         }
         unsafe extern "system" fn GetMemberTypeByName<Identity: ID3D11ShaderReflectionType_Impl>(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCSTR,
+            name: crate::core_supplemental::PCSTR,
         ) -> Option<ID3D11ShaderReflectionType> {
             unsafe {
                 let this = (this as *mut *mut core::ffi::c_void) as *const windows_core::ScopedHeap;
@@ -25329,7 +25331,7 @@ impl ID3D11ShaderReflectionType_Vtbl {
         unsafe extern "system" fn GetMemberTypeName<Identity: ID3D11ShaderReflectionType_Impl>(
             this: *mut core::ffi::c_void,
             index: u32,
-        ) -> windows_core::PCSTR {
+        ) -> crate::core_supplemental::PCSTR {
             unsafe {
                 let this = (this as *mut *mut core::ffi::c_void) as *const windows_core::ScopedHeap;
                 let this = &*((*this).this as *const Identity);
@@ -33970,7 +33972,7 @@ windows_core::imp::interface_hierarchy!(ID3DUserDefinedAnnotation, windows_core:
 impl ID3DUserDefinedAnnotation {
     pub unsafe fn BeginEvent<P0>(&self, name: P0) -> i32
     where
-        P0: windows_core::Param<windows_core::PCWSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCWSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).BeginEvent)(
@@ -33986,7 +33988,7 @@ impl ID3DUserDefinedAnnotation {
     }
     pub unsafe fn SetMarker<P0>(&self, name: P0)
     where
-        P0: windows_core::Param<windows_core::PCWSTR>,
+        P0: windows_core::Param<crate::core_supplemental::PCWSTR>,
     {
         unsafe {
             (windows_core::Interface::vtable(self).SetMarker)(
@@ -34004,16 +34006,16 @@ impl ID3DUserDefinedAnnotation {
 #[repr(C)]
 pub struct ID3DUserDefinedAnnotation_Vtbl {
     pub base__: windows_core::IUnknown_Vtbl,
-    pub BeginEvent: unsafe extern "system" fn(*mut core::ffi::c_void, windows_core::PCWSTR) -> i32,
+    pub BeginEvent: unsafe extern "system" fn(*mut core::ffi::c_void, crate::core_supplemental::PCWSTR) -> i32,
     pub EndEvent: unsafe extern "system" fn(*mut core::ffi::c_void) -> i32,
-    pub SetMarker: unsafe extern "system" fn(*mut core::ffi::c_void, windows_core::PCWSTR),
+    pub SetMarker: unsafe extern "system" fn(*mut core::ffi::c_void, crate::core_supplemental::PCWSTR),
     pub GetStatus:
         unsafe extern "system" fn(*mut core::ffi::c_void) -> crate::Foundation::BOOL,
 }
 pub trait ID3DUserDefinedAnnotation_Impl: windows_core::IUnknownImpl {
-    fn BeginEvent(&self, name: &windows_core::PCWSTR) -> i32;
+    fn BeginEvent(&self, name: &crate::core_supplemental::PCWSTR) -> i32;
     fn EndEvent(&self) -> i32;
-    fn SetMarker(&self, name: &windows_core::PCWSTR);
+    fn SetMarker(&self, name: &crate::core_supplemental::PCWSTR);
     fn GetStatus(&self) -> crate::Foundation::BOOL;
 }
 impl ID3DUserDefinedAnnotation_Vtbl {
@@ -34023,7 +34025,7 @@ impl ID3DUserDefinedAnnotation_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCWSTR,
+            name: crate::core_supplemental::PCWSTR,
         ) -> i32 {
             unsafe {
                 let this: &Identity =
@@ -34048,7 +34050,7 @@ impl ID3DUserDefinedAnnotation_Vtbl {
             const OFFSET: isize,
         >(
             this: *mut core::ffi::c_void,
-            name: windows_core::PCWSTR,
+            name: crate::core_supplemental::PCWSTR,
         ) {
             unsafe {
                 let this: &Identity =

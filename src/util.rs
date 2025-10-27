@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use d3d11_ffi::core::PCSTR;
+use d3d11_ffi::core_supplemental::PCSTR;
 
 // Helper for working with DX11 methods that return results as HRESULT and out parameters as an Option<T>
 pub fn wrap_option_out_result<T, F>(f: F) -> d3d11_ffi::core::Result<T>

@@ -8,17 +8,17 @@ impl HANDLE {
         self.0 == -1 as _ || self.0 == 0 as _
     }
 }
-impl windows_core::Free for HANDLE {
-    #[inline]
-    unsafe fn free(&mut self) {
-        if !self.is_invalid() {
-            windows_targets::link!("kernel32.dll" "system" fn CloseHandle(hobject : *mut core::ffi::c_void) -> i32);
-            unsafe {
-                CloseHandle(self.0);
-            }
-        }
-    }
-}
+// impl windows_core::Free for HANDLE {
+//     #[inline]
+//     unsafe fn free(&mut self) {
+//         if !self.is_invalid() {
+//             windows_targets::link!("kernel32.dll" "system" fn CloseHandle(hobject : *mut core::ffi::c_void) -> i32);
+//             unsafe {
+//                 CloseHandle(self.0);
+//             }
+//         }
+//     }
+// }
 impl Default for HANDLE {
     fn default() -> Self {
         unsafe { core::mem::zeroed() }
@@ -33,17 +33,17 @@ impl HMODULE {
         self.0.is_null()
     }
 }
-impl windows_core::Free for HMODULE {
-    #[inline]
-    unsafe fn free(&mut self) {
-        if !self.is_invalid() {
-            windows_targets::link!("kernel32.dll" "system" fn FreeLibrary(hlibmodule : *mut core::ffi::c_void) -> i32);
-            unsafe {
-                FreeLibrary(self.0);
-            }
-        }
-    }
-}
+// impl windows_core::Free for HMODULE {
+//     #[inline]
+//     unsafe fn free(&mut self) {
+//         if !self.is_invalid() {
+//             windows_targets::link!("kernel32.dll" "system" fn FreeLibrary(hlibmodule : *mut core::ffi::c_void) -> i32);
+//             unsafe {
+//                 FreeLibrary(self.0);
+//             }
+//         }
+//     }
+// }
 impl Default for HMODULE {
     fn default() -> Self {
         unsafe { core::mem::zeroed() }

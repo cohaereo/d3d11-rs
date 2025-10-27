@@ -32,11 +32,22 @@ pub struct CommandList(pub(crate) ID3D11CommandList);
 impl_device_child!(CommandList);
 
 #[derive(Clone)]
-pub struct DeviceContext(pub(crate) ID3D11DeviceContext);
+pub struct DeviceContext(
+    pub(crate) ID3D11DeviceContext,
+    pub(crate) ID3D11DeviceContext1,
+);
 impl_device_child!(DeviceContext);
 
 #[cfg_attr(feature = "profiling", profiling::all_functions)]
 impl DeviceContext {
+    pub(crate) fn from_raw(ctx: ID3D11DeviceContext) -> Self {
+        let ctx1 = ctx
+            .cast::<ID3D11DeviceContext1>()
+            .expect("Failed to obtain ID3D11DeviceContext1");
+
+        Self(ctx, ctx1)
+    }
+
     pub fn get_device(&self) -> crate::device::Device {
         unsafe { crate::device::Device(self.0.GetDevice().unwrap()) }
     }
