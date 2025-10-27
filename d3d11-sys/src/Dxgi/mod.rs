@@ -7,6 +7,7 @@ pub unsafe fn CreateDXGIFactory<T>() -> windows_core::Result<T>
 where
     T: windows_core::Interface,
 {
+    crate::dxvk::set_wsi_driver_env(false);
     crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn CreateDXGIFactory(riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
     let mut result__ = core::ptr::null_mut();
     unsafe {
@@ -32,6 +33,7 @@ pub unsafe fn CreateDXGIFactory2<T>(flags: DXGI_CREATE_FACTORY_FLAGS) -> windows
 where
     T: windows_core::Interface,
 {
+    crate::dxvk::set_wsi_driver_env(false);
     crate::link!("dxgi.dll" "dxvk_dxgi" "system" fn CreateDXGIFactory2(flags : DXGI_CREATE_FACTORY_FLAGS, riid : *const windows_core::GUID, ppfactory : *mut *mut core::ffi::c_void) -> windows_core::HRESULT);
     let mut result__ = core::ptr::null_mut();
     unsafe {
