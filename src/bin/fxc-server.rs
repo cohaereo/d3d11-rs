@@ -1,5 +1,9 @@
-use std::net::{TcpListener, TcpStream};
+use std::{
+    io::{Read, Write},
+    net::{TcpListener, TcpStream},
+};
 
+use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use d3d11::fxc::wine::RemoteFxcRequest;
 use d3d11_ffi::Foundation::{E_FAIL, E_INVALIDARG, S_OK};
 
@@ -26,14 +30,31 @@ fn main() -> std::io::Result<()> {
 }
 
 fn compiler_thread(mut stream: TcpStream) {
-    while let Ok(RemoteFxcRequest {
-        data,
-        source_name,
-        defines,
-        entry_point,
-        target,
-    }) = bincode::decode_from_std_read(&mut stream, bincode::config::standard())
-    {
+    _ = stream.set_nodelay(true);
+    while let Ok(data_length) = stream.read_u32::<BigEndian>() {
+        let mut data = vec![0u8; data_length as usize];
+        if let Err(e) = stream.read_exact(&mut data) {
+            eprintln!("Failed to read FXC request data: {}", e);
+            break;
+        }
+        let (
+            RemoteFxcRequest {
+                data,
+                source_name,
+                defines,
+                entry_point,
+                target,
+            },
+            _,
+        ): (RemoteFxcRequest, _) =
+            match bincode::decode_from_slice(&data, bincode::config::standard()) {
+                Ok(res) => res,
+                Err(e) => {
+                    eprintln!("Failed to decode FXC request: {}", e);
+                    break;
+                }
+            };
+
         println!(
             "Compiling shader: entry_point='{}', target='{}', defines={:?}",
             entry_point, target, defines
@@ -83,6 +104,13 @@ fn compiler_thread(mut stream: TcpStream) {
             },
         };
 
-        let _ = bincode::encode_into_std_write(&response, &mut stream, bincode::config::standard());
+        let mut write_buffer = Vec::<u8>::with_capacity(1024 * 1024);
+        let _ = bincode::encode_into_std_write(
+            &response,
+            &mut write_buffer,
+            bincode::config::standard(),
+        );
+        let _ = stream.write_u32::<BigEndian>(write_buffer.len() as u32);
+        let _ = stream.write_all(&write_buffer);
     }
 }

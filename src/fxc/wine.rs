@@ -1,7 +1,10 @@
 use std::{
+    io::{Read, Write},
     net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream},
     sync::{LazyLock, Mutex},
 };
+
+use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 
 use crate::fxc::ShaderTarget;
 
@@ -36,14 +39,14 @@ impl RemoteFxc {
             .spawn()?;
 
         // Wait a moment for the server to start
-
         let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 18008);
-        for _ in 0..5 {
-            std::thread::sleep(std::time::Duration::from_millis(500));
+        for _ in 0..50 {
             let Ok(stream) = TcpStream::connect_timeout(&addr, std::time::Duration::from_secs(5))
             else {
+                std::thread::sleep(std::time::Duration::from_millis(100));
                 continue;
             };
+            _ = stream.set_nodelay(true);
             return Ok(Self {
                 _process: process,
                 stream,
@@ -87,13 +90,24 @@ pub fn compile(
         target: target.profile().to_string(),
     };
 
-    bincode::encode_into_std_write(&request, &mut fxc.stream, bincode::config::standard())
-        .map_err(|e| crate::error::Error::Other(format!("Failed to send FXC request: {e}")))?;
+    let mut write_buffer = Vec::<u8>::with_capacity(1024 * 1024);
 
+    bincode::encode_into_std_write(&request, &mut write_buffer, bincode::config::standard())
+        .map_err(|e| crate::error::Error::Other(format!("Failed to encode FXC request: {e}")))?;
+
+    fxc.stream
+        .write_u32::<BigEndian>(write_buffer.len() as u32)?;
+    fxc.stream.write_all(&write_buffer)?;
+
+    let response_len = fxc.stream.read_u32::<BigEndian>()? as usize;
+    let mut response_buffer = vec![0u8; response_len];
+    fxc.stream.read_exact(&mut response_buffer)?;
     let response: RemoteFxcResult =
-        bincode::decode_from_std_read(&mut fxc.stream, bincode::config::standard()).map_err(
-            |e| crate::error::Error::Other(format!("Failed to receive FXC response: {e}")),
-        )?;
+        bincode::decode_from_slice(&response_buffer, bincode::config::standard())
+            .map_err(|e| {
+                crate::error::Error::Other(format!("Failed to receive FXC response: {e}"))
+            })?
+            .0;
 
     if response.hresult == 0 {
         Ok(response.compiled_code.unwrap_or_default())
