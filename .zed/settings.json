@@ -7,7 +7,8 @@
     "rust-analyzer": {
       "initialization_options": {
         "cargo": {
-          "features": ["sdl2"]
+          "features": ["sdl2", "fxc_wine"],
+          "target": "x86_64-pc-windows-msvc"
         }
       }
     }

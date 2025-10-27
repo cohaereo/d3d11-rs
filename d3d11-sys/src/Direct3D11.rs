@@ -16,7 +16,7 @@ pub unsafe fn D3D11CreateDevice<P0>(
 where
     P0: windows_core::Param<crate::Dxgi::IDXGIAdapter>,
 {
-    crate::dxvk::set_wsi_driver_env();
+    crate::dxvk::set_wsi_driver_env(false);
     crate::link!("d3d11.dll" "dxvk_d3d11" "system" fn D3D11CreateDevice(padapter : * mut core::ffi::c_void, drivertype : super::Direct3D:: D3D_DRIVER_TYPE, software : crate::Foundation:: HMODULE, flags : D3D11_CREATE_DEVICE_FLAG, pfeaturelevels : *const super::Direct3D:: D3D_FEATURE_LEVEL, featurelevels : u32, sdkversion : u32, ppdevice : *mut * mut core::ffi::c_void, pfeaturelevel : *mut super::Direct3D:: D3D_FEATURE_LEVEL, ppimmediatecontext : *mut * mut core::ffi::c_void) -> windows_core::HRESULT);
     unsafe {
         D3D11CreateDevice(
@@ -59,7 +59,7 @@ pub unsafe fn D3D11CreateDeviceAndSwapChain<P0>(
 where
     P0: windows_core::Param<crate::Dxgi::IDXGIAdapter>,
 {
-    crate::dxvk::set_wsi_driver_env();
+    crate::dxvk::set_wsi_driver_env(true);
     crate::link!("d3d11.dll" "dxvk_d3d11" "system" fn D3D11CreateDeviceAndSwapChain(padapter : * mut core::ffi::c_void, drivertype : super::Direct3D:: D3D_DRIVER_TYPE, software : crate::Foundation:: HMODULE, flags : D3D11_CREATE_DEVICE_FLAG, pfeaturelevels : *const super::Direct3D:: D3D_FEATURE_LEVEL, featurelevels : u32, sdkversion : u32, pswapchaindesc : *const crate::Dxgi:: DXGI_SWAP_CHAIN_DESC, ppswapchain : *mut * mut core::ffi::c_void, ppdevice : *mut * mut core::ffi::c_void, pfeaturelevel : *mut super::Direct3D:: D3D_FEATURE_LEVEL, ppimmediatecontext : *mut * mut core::ffi::c_void) -> windows_core::HRESULT);
     unsafe {
         D3D11CreateDeviceAndSwapChain(

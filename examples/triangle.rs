@@ -7,7 +7,9 @@ use d3d11::*;
 use raw_window_handle::HasWindowHandle;
 
 #[cfg(feature = "fxc")]
-fn compile_shaders() -> anyhow::Result<Vec<u8>, Vec<u8>> {
+fn compile_shaders() -> anyhow::Result<(Vec<u8>, Vec<u8>)> {
+    use d3d11::fxc::ShaderTarget;
+
     const SHADER_SRC: &str = r#"
     struct VSOutput {
         float4 position : SV_POSITION;
@@ -38,7 +40,7 @@ fn compile_shaders() -> anyhow::Result<Vec<u8>, Vec<u8>> {
     }
     "#;
 
-    let vs_data = d3d11::shader::fxc_compile(
+    let vs_data = d3d11::fxc::compile(
         SHADER_SRC.as_bytes(),
         Some("triangle_vs"),
         &[],
@@ -46,13 +48,15 @@ fn compile_shaders() -> anyhow::Result<Vec<u8>, Vec<u8>> {
         ShaderTarget::Vertex,
     )?;
 
-    let ps_data = d3d11::shader::fxc_compile(
+    let ps_data = d3d11::fxc::compile(
         SHADER_SRC.as_bytes(),
         Some("triangle_ps"),
         &[],
         "PSMain",
         ShaderTarget::Pixel,
     )?;
+
+    Ok((vs_data, ps_data))
 }
 
 #[cfg(not(feature = "fxc"))]
@@ -80,6 +84,7 @@ fn main() -> anyhow::Result<()> {
         builder_ref.build().expect("Failed to create window")
     };
 
+    // TODO(cohae): We should support passing raw-window-handle windows directly to SwapChain::create
     #[cfg(target_os = "windows")]
     let output_window = {
         let rwh = window
@@ -136,9 +141,8 @@ fn main() -> anyhow::Result<()> {
     let mut event_pump = sdl_context.event_pump().unwrap();
     'app: loop {
         for event in event_pump.poll_iter() {
-            match event {
-                sdl2::event::Event::Quit { .. } => break 'app,
-                _ => {}
+            if let sdl2::event::Event::Quit { .. } = event {
+                break 'app;
             }
         }
 

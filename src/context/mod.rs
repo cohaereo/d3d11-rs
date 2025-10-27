@@ -1,5 +1,6 @@
 mod annotation;
 mod draw;
+pub mod fxc;
 mod input_assembler;
 mod output_merger;
 mod query;

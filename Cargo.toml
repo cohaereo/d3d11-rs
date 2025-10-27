@@ -23,6 +23,7 @@ targets = [
     "aarch64-pc-windows-msvc",
     "i686-pc-windows-msvc",
     "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu"
 ]
 
 [dependencies]
@@ -40,13 +41,18 @@ sdl3 = { version = "0.16", features = ["raw-window-handle"], optional = true }
 
 [dev-dependencies]
 anyhow = "1"
+image = { version = "0.25", default-features = false, features = ["bmp"] }
 # glfw = { version = "0.59.0", features = ["vulkan"] } # Vulkan is needed for DXVK native to work
 raw-window-handle = "0.6"
 
 [features]
+default = ["fxc", "fxc_wine"]
+
 profiling = ["dep:profiling"]
-# Enables D3DCompile through the fxc_compile function. Currently only supports Windows.
+# Enables D3DCompile. Currently only supports Windows.
 fxc = ["d3d11-ffi/Win32_Graphics_Direct3D_Fxc"]
+# Enables D3DCompile on Linux by spawning a compiler server using d3dcompiler under Wine
+fxc_wine = ["fxc"]
 
 # dxvk_wsi_glfw = ["d3d11-ffi/dxvk_wsi_glfw"] # TODO: glfw support is currently broken?
 sdl2 = ["d3d11-ffi/dxvk_wsi_sdl2", "dep:sdl2"]
