@@ -35,10 +35,12 @@ profiling = { version = "1", optional = true }
 static_assertions = "1.1.0"
 thiserror = "2.0"
 
+sdl2 = { version = "0.38", features = ["raw-window-handle"], optional = true }
+sdl3 = { version = "0.16", features = ["raw-window-handle"], optional = true }
+
 [dev-dependencies]
 anyhow = "1"
 # glfw = { version = "0.59.0", features = ["vulkan"] } # Vulkan is needed for DXVK native to work
-sdl2 = { version = "0.38", features = ["raw-window-handle"] }
 raw-window-handle = "0.6"
 
 [features]
@@ -47,8 +49,8 @@ profiling = ["dep:profiling"]
 fxc = ["d3d11-ffi/Win32_Graphics_Direct3D_Fxc"]
 
 # dxvk_wsi_glfw = ["d3d11-ffi/dxvk_wsi_glfw"] # TODO: glfw support is currently broken?
-dxvk_wsi_sdl2 = ["d3d11-ffi/dxvk_wsi_sdl2"]
-dxvk_wsi_sdl3 = ["d3d11-ffi/dxvk_wsi_sdl3"]
+sdl2 = ["d3d11-ffi/dxvk_wsi_sdl2", "dep:sdl2"]
+sdl3 = ["d3d11-ffi/dxvk_wsi_sdl3", "dep:sdl3"]
 
 
 # [[example]]

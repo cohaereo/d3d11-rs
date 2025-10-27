@@ -23,7 +23,52 @@ use super::{Format, SampleDesc};
 pub struct SwapChain(pub(crate) IDXGISwapChain);
 
 impl SwapChain {
-    pub fn create(device: &Device, desc: &SwapChainDesc) -> crate::Result<Self> {
+    #[cfg(any(not(any(feature = "sdl2", feature = "sdl3")), target_os = "windows"))]
+    pub fn create(
+        device: &Device,
+        output_window: HWND,
+        desc: &SwapChainDesc,
+    ) -> crate::Result<Self> {
+        Self::create_impl(
+            device,
+            &SwapChainDesc {
+                output_window,
+                ..desc.clone()
+            },
+        )
+    }
+
+    #[cfg(all(feature = "sdl2", not(target_os = "windows")))]
+    pub fn create(
+        device: &Device,
+        output_window: &sdl2::video::Window,
+        desc: &SwapChainDesc,
+    ) -> crate::Result<Self> {
+        Self::create_impl(
+            device,
+            &SwapChainDesc {
+                output_window: HWND(output_window.raw() as _),
+                ..desc.clone()
+            },
+        )
+    }
+
+    #[cfg(all(feature = "sdl3", not(target_os = "windows")))]
+    pub fn create(
+        device: &Device,
+        output_window: &sdl3::video::Window,
+        desc: &SwapChainDesc,
+    ) -> crate::Result<Self> {
+        Self::create_impl(
+            device,
+            &SwapChainDesc {
+                output_window: HWND(output_window.raw() as _),
+                ..desc.clone()
+            },
+        )
+    }
+
+    fn create_impl(device: &Device, desc: &SwapChainDesc) -> crate::Result<Self> {
         let format_support = device.check_format_support(desc.buffer_desc.format);
         validate_input!(
             format_support.contains(FormatSupport::DISPLAY),
@@ -93,7 +138,8 @@ pub struct SwapChainDesc {
     pub sample_desc: SampleDesc,
     pub buffer_usage: DxgiUsage,
     pub buffer_count: u32,
-    pub output_window: HWND,
+    #[builder(skip)]
+    output_window: HWND,
     #[builder(default = true, into)]
     pub windowed: BOOL,
     pub swap_effect: SwapEffect,

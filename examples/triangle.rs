@@ -81,7 +81,7 @@ fn main() -> anyhow::Result<()> {
     };
 
     #[cfg(target_os = "windows")]
-    let hwnd = {
+    let output_window = {
         let rwh = window
             .window_handle()
             .expect("Failed to get window handle")
@@ -92,13 +92,14 @@ fn main() -> anyhow::Result<()> {
         } as _)
     };
     #[cfg(not(target_os = "windows"))]
-    let hwnd = HWND(window.raw() as _);
+    let output_window = &window;
 
     let device = Device::create(None, true).context("Failed to create device")?;
     let ictx = device.get_immediate_context();
 
     let swapchain = match SwapChain::create(
         &device,
+        output_window,
         &SwapChainDesc::builder()
             .buffer_count(1)
             .buffer_desc(
@@ -109,7 +110,6 @@ fn main() -> anyhow::Result<()> {
                     .format(Format::R8g8b8a8UnormSrgb)
                     .build(),
             )
-            .output_window(hwnd)
             .buffer_usage(DxgiUsage::RENDER_TARGET_OUTPUT)
             .swap_effect(SwapEffect::Discard)
             .build(),
