@@ -1,12 +1,12 @@
 #[cfg(target_os = "windows")]
-mod native;
+pub mod native;
 #[cfg(target_os = "windows")]
 pub use native::*;
 
-// #[cfg(all(not(target_os = "windows"), feature = "fxc_wine"))]
-// mod wine;
-// #[cfg(all(not(target_os = "windows"), feature = "fxc_wine"))]
-// pub use wine::*;
+#[cfg(feature = "fxc_wine")]
+pub mod wine;
+#[cfg(all(not(target_os = "windows"), feature = "fxc_wine"))]
+pub use wine::*;
 
 pub enum ShaderTarget {
     Vertex,

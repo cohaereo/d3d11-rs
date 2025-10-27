@@ -1,13 +1,6 @@
-use d3d11_ffi::{
-    core_supplemental::PCSTR,
-    Direct3D::{
-        Fxc::{D3DCompile, D3DCOMPILE_DEBUG},
-        D3D_SHADER_MACRO,
-    },
-    Direct3D11::*,
-};
+use d3d11_ffi::Direct3D11::*;
 
-use crate::{error::bail, fxc::ShaderTarget, impl_device_child, util::to_pcstr};
+use crate::{fxc::ShaderTarget, impl_device_child};
 
 #[repr(transparent)]
 #[derive(Clone)]

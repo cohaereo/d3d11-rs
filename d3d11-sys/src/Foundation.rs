@@ -186,6 +186,8 @@ impl From<HWND> for HANDLE {
 }
 pub const S_FALSE: windows_core::HRESULT = windows_core::HRESULT(0x1_u32 as _);
 pub const S_OK: windows_core::HRESULT = windows_core::HRESULT(0x0_u32 as _);
+pub const E_INVALIDARG: windows_core::HRESULT = windows_core::HRESULT(0x80070057_u32 as _);
+pub const E_FAIL: windows_core::HRESULT = windows_core::HRESULT(0x80004005_u32 as _);
 pub const DXGI_DDI_ERR_NONEXCLUSIVE: windows_core::HRESULT = windows_core::HRESULT(0x887B0003_u32 as _);
 pub const DXGI_DDI_ERR_UNSUPPORTED: windows_core::HRESULT = windows_core::HRESULT(0x887B0002_u32 as _);
 pub const DXGI_DDI_ERR_WASSTILLDRAWING: windows_core::HRESULT = windows_core::HRESULT(0x887B0001_u32 as _);

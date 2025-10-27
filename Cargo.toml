@@ -17,6 +17,16 @@ categories = [
 keywords = ["d3d", "directx", "microsoft", "windows", "winapi"]
 include = ["**/*.rs", "Cargo.toml"]
 
+[lib]
+name = "d3d11"
+path = "src/lib.rs"
+
+[[bin]]
+name = "fxc-server"
+path = "src/bin/fxc-server.rs"
+required-features = ["fxc"]
+
+
 [package.metadata.docs.rs]
 default-target = "x86_64-pc-windows-msvc"
 targets = [
@@ -38,6 +48,8 @@ thiserror = "2.0"
 
 sdl2 = { version = "0.38", features = ["raw-window-handle"], optional = true }
 sdl3 = { version = "0.16", features = ["raw-window-handle"], optional = true }
+byteorder = "1.5.0"
+bincode = { version = "2.0.1", default-features = false, features = ["alloc", "derive", "std"] }
 
 [dev-dependencies]
 anyhow = "1"

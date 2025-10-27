@@ -5,6 +5,8 @@
     clippy::upper_case_acronyms
 )]
 
+pub mod fxc;
+
 pub mod blend_state;
 pub mod buffer;
 pub mod common;

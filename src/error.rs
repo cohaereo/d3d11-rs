@@ -12,6 +12,12 @@ pub enum Error {
 
     #[error("The requested interface is not supported by the device")]
     InterfaceUnsupported,
+
+    #[error("io error: {0}")]
+    Io(#[from] std::io::Error),
+
+    #[error("Other error: {0}")]
+    Other(String),
 }
 
 // validate_input!(condition, error_format, ...)
