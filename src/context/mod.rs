@@ -134,6 +134,40 @@ impl DeviceContext {
         })
     }
 
+    pub unsafe fn map_unchecked<T: Resource + Clone>(
+        &self,
+        resource: &T,
+        subresource: u32,
+        map_type: MapType,
+        do_not_wait: bool,
+    ) -> crate::Result<MappedSubresource> {
+        let flags = if do_not_wait {
+            D3D11_MAP_FLAG_DO_NOT_WAIT.0
+        } else {
+            0
+        };
+
+        let mapped = wrap_out_ptr(|out| {
+            self.0.Map(
+                &resource.to_ffi_resource(),
+                subresource,
+                D3D11_MAP(map_type as i32),
+                flags as _,
+                Some(out),
+            )
+        })?;
+
+        Ok(MappedSubresource {
+            data: mapped.pData,
+            row_pitch: mapped.RowPitch,
+            depth_pitch: mapped.DepthPitch,
+        })
+    }
+
+    pub fn unmap<T: Resource + Clone>(&self, resource: &T, subresource: u32) {
+        unsafe { self.0.Unmap(&resource.to_ffi_resource(), subresource) }
+    }
+
     // TODO(cohae): Fix this in d3d11-sys instead
     pub unsafe fn get_data<T: Sized>(
         &self,
@@ -234,6 +268,12 @@ bitflags! {
         const DEPTH = D3D11_CLEAR_DEPTH.0;
         const STENCIL = D3D11_CLEAR_STENCIL.0;
     }
+}
+
+pub struct MappedSubresource {
+    pub data: *mut c_void,
+    pub row_pitch: u32,
+    pub depth_pitch: u32,
 }
 
 pub struct SubresourceMapGuard<T: Resource> {

@@ -26,7 +26,6 @@ name = "fxc-server"
 path = "src/bin/fxc-server.rs"
 required-features = ["fxc", "fxc_server"]
 
-
 [package.metadata.docs.rs]
 default-target = "x86_64-pc-windows-msvc"
 targets = [
