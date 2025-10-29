@@ -89,7 +89,7 @@ fn main() -> anyhow::Result<()> {
     let rtv = device.create_render_target_view(&output_rtv, None)?;
 
     ctx.clear_render_target_view(&rtv, &[0.0, 0.0, 0.0, 1.0]);
-    ctx.output_merger_set_render_targets(&[Some(rtv.clone())], None);
+    ctx.output_merger_set_render_targets(&[Some(&rtv)], None);
     ctx.rasterizer_set_viewports(&[Viewport::builder().width(1024.0).height(1024.0).build()]);
 
     ctx.vertex_set_shader(Some(&vs));

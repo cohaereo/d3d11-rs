@@ -1,6 +1,9 @@
 use std::mem::transmute;
 
-use crate::{dxgi, error::validate_input, util::OptionalParam, Buffer, InputLayout};
+use crate::{
+    cast_optional_resource_refs, dxgi, error::validate_input, util::OptionalParam, Buffer,
+    InputLayout,
+};
 
 use super::DeviceContext;
 use d3d11_ffi::Direct3D::*;
@@ -24,7 +27,7 @@ impl DeviceContext {
     pub fn input_assembler_set_vertex_buffers(
         &self,
         start_slot: u32,
-        buffers: &[Option<Buffer>],
+        buffers: &[Option<&Buffer>],
         strides: Option<&[u32]>,
         offsets: Option<&[u32]>,
     ) -> crate::Result<()> {
@@ -47,11 +50,12 @@ impl DeviceContext {
         }
 
         unsafe {
+            let raw_buffers = cast_optional_resource_refs!(8, buffers);
             self.0.IASetVertexBuffers(
                 start_slot,
                 buffers.len() as _,
                 // SAFETY: d3d11::Buffer is repr(transparent) over ID3D11Buffer
-                Some(transmute(buffers.as_ptr())),
+                Some(transmute(raw_buffers.as_ptr())),
                 strides.map(|s| s.as_ptr()),
                 offsets.map(|o| o.as_ptr()),
             );

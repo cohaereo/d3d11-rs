@@ -50,6 +50,7 @@ sdl2 = { version = "0.38", features = ["raw-window-handle"], optional = true }
 sdl3 = { version = "0.16", features = ["raw-window-handle"], optional = true }
 byteorder = "1.5.0"
 bincode = { version = "2.0.1", default-features = false, features = ["alloc", "derive", "std"] }
+smallvec = "1.15.1"
 
 [dev-dependencies]
 anyhow = "1"

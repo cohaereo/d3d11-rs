@@ -83,3 +83,21 @@ impl<T> OptionalParam for Option<&T> {
         *self
     }
 }
+
+/// Helper macro to cast a slice of Option<&Resource> to a SmallVec of Option<NonNull<c_void>>
+/// for use in D3D11 methods that take raw resource pointers.
+/// # Arguments
+/// * `$stack_count`: The number of elements to store on the stack before spilling to the heap.
+/// * `$input_slice`: The input slice of Option<&Resource>.
+#[macro_export]
+macro_rules! cast_optional_resource_refs {
+    ($stack_count:expr, $input_slice:ident) => {{
+        type TempStorage =
+            smallvec::SmallVec<[Option<std::ptr::NonNull<std::ffi::c_void>>; $stack_count]>;
+
+        $input_slice
+            .into_iter()
+            .map(|res| res.as_ref().map(|b| std::mem::transmute_copy(*b)))
+            .collect::<TempStorage>()
+    }};
+}

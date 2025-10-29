@@ -1,8 +1,8 @@
 use std::mem::transmute;
 
 use crate::{
-    buffer::Buffer, sampler::SamplerState, shader::*, util::OptionalParam, ShaderResourceView,
-    UnorderedAccessView,
+    buffer::Buffer, cast_optional_resource_refs, sampler::SamplerState, shader::*,
+    util::OptionalParam, ShaderResourceView, UnorderedAccessView,
 };
 use d3d11_ffi::Direct3D11::*;
 
@@ -132,14 +132,15 @@ impl DeviceContext {
         D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT as usize;
 
     // generate_common_stage_methods!(get_constant_buffers, GetConstantBuffers);
-    generate_common_stage_methods!(api(0), set_constant_buffers, SetConstantBuffers, (start_slot: u32, buffers: &[Option<Buffer>]) -> () {
+    generate_common_stage_methods!(api(0), set_constant_buffers, SetConstantBuffers, (start_slot: u32, buffers: &[Option<&Buffer>]) -> () {
         |ctx, method: FuncSetConstantBuffers|
         unsafe {
+            let raw_buffers = cast_optional_resource_refs!(8, buffers);
             // SAFETY: `Buffer` is a transparent wrapper around `ID3D11Buffer`
-            method(ctx, start_slot, Some(transmute(buffers)));
+            method(ctx, start_slot, Some(transmute(raw_buffers.as_slice())));
         }
     });
-    generate_common_stage_methods!(api(1), set_constant_buffers1, SetConstantBuffers1, (start_slot: u32, buffers: &[Option<Buffer>], first_constant: Option<&[u32]>, num_constants: Option<&[u32]>) -> () {
+    generate_common_stage_methods!(api(1), set_constant_buffers1, SetConstantBuffers1, (start_slot: u32, buffers: &[Option<&Buffer>], first_constant: Option<&[u32]>, num_constants: Option<&[u32]>) -> () {
         |ctx, method: FuncSetConstantBuffers1|
         unsafe {
             let num_buffers = buffers.len() as u32;
@@ -158,8 +159,9 @@ impl DeviceContext {
                 );
             }
 
+            let raw_buffers = cast_optional_resource_refs!(8, buffers);
             // SAFETY: `Buffer` is a transparent wrapper around `ID3D11Buffer`
-            method(ctx, start_slot, num_buffers, Some(buffers.as_ptr() as *const Option<ID3D11Buffer>), first_constant.map(|f| f.as_ptr()), num_constants.map(|n| n.as_ptr()));
+            method(ctx, start_slot, num_buffers, Some(transmute(raw_buffers.as_ptr())), first_constant.map(|f| f.as_ptr()), num_constants.map(|n| n.as_ptr()));
         }
     });
     generate_common_stage_methods!(api(0), get_constant_buffers, GetConstantBuffers, () -> [Option<Buffer>; D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT as usize] {
@@ -171,11 +173,12 @@ impl DeviceContext {
         }
     });
     // generate_common_stage_methods!(get_samplers, GetSamplers);
-    generate_common_stage_methods!(api(0), set_samplers, SetSamplers, (start_slot: u32, samplers: &[Option<SamplerState>]) -> () {
+    generate_common_stage_methods!(api(0), set_samplers, SetSamplers, (start_slot: u32, samplers: &[Option<&SamplerState>]) -> () {
         |ctx, method: FuncSetSamplers|
         unsafe {
+            let raw_samplers = cast_optional_resource_refs!(8, samplers);
             // SAFETY: `Sampler` is a transparent wrapper around `ID3D11SamplerState`
-            method(ctx, start_slot, Some(transmute(samplers)));
+            method(ctx, start_slot, Some(transmute(raw_samplers.as_slice())));
         }
     });
     generate_common_stage_methods!(api(0), get_samplers, GetSamplers, () -> [Option<SamplerState>; D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT as usize] {
@@ -187,10 +190,11 @@ impl DeviceContext {
         }
     });
     // generate_common_stage_methods!(get_shader_resources, GetShaderResources);
-    generate_common_stage_methods!(api(0), set_shader_resources, SetShaderResources, (start_slot: u32, views: &[Option<ShaderResourceView>]) -> () {
+    generate_common_stage_methods!(api(0), set_shader_resources, SetShaderResources, (start_slot: u32, views: &[Option<&ShaderResourceView>]) -> () {
         |ctx, method: FuncSetShaderResources|
         unsafe {
-            method(ctx, start_slot, Some(transmute(views)));
+            let raw_views = cast_optional_resource_refs!(8, views);
+            method(ctx, start_slot, Some(transmute(raw_views.as_slice())));
         }
     });
     generate_common_stage_methods!(api(0), get_shader_resources, GetShaderResources, () -> [Option<ShaderResourceView>; D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT as usize] {
@@ -205,7 +209,7 @@ impl DeviceContext {
     pub fn compute_set_unordered_access_views(
         &self,
         start_slot: u32,
-        views: &[Option<UnorderedAccessView>],
+        views: &[Option<&UnorderedAccessView>],
         initial_counts: Option<&[u32]>,
     ) {
         if let Some(counts) = initial_counts {
@@ -217,10 +221,11 @@ impl DeviceContext {
         }
 
         unsafe {
+            let raw_views = cast_optional_resource_refs!(8, views);
             self.0.CSSetUnorderedAccessViews(
                 start_slot,
                 views.len() as u32,
-                Some(views.as_ptr() as _),
+                Some(raw_views.as_ptr() as _),
                 initial_counts.map(|c| c.as_ptr()),
             );
         }

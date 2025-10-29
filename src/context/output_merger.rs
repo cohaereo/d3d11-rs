@@ -1,8 +1,8 @@
 use std::mem::transmute;
 
 use crate::{
-    blend_state::BlendState, rtv::RenderTargetView, util::OptionalParam, DepthStencilState,
-    DepthStencilView,
+    blend_state::BlendState, cast_optional_resource_refs, rtv::RenderTargetView,
+    util::OptionalParam, DepthStencilState, DepthStencilView,
 };
 
 use super::DeviceContext;
@@ -11,12 +11,13 @@ use super::DeviceContext;
 impl DeviceContext {
     pub fn output_merger_set_render_targets(
         &self,
-        render_target_views: &[Option<RenderTargetView>],
+        render_target_views: &[Option<&RenderTargetView>],
         depth_stencil_view: Option<&DepthStencilView>,
     ) {
         unsafe {
+            let raw_rtvs = cast_optional_resource_refs!(8, render_target_views);
             self.0.OMSetRenderTargets(
-                Some(transmute(render_target_views)),
+                Some(transmute(raw_rtvs.as_slice())),
                 depth_stencil_view.map(|d| &d.0),
             );
         }

@@ -147,7 +147,7 @@ fn main() -> anyhow::Result<()> {
         }
 
         dctx.clear_render_target_view(&rtv, &[0.0, 0.0, 0.0, 1.0]);
-        dctx.output_merger_set_render_targets(&[Some(rtv.clone())], None);
+        dctx.output_merger_set_render_targets(&[Some(&rtv)], None);
         dctx.rasterizer_set_viewports(&[Viewport::builder().width(1024.0).height(1024.0).build()]);
 
         dctx.vertex_set_shader(Some(&vs));
