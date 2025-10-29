@@ -67,11 +67,11 @@ bitflags! {
 }
 
 pub trait Resource: Sized {
-    fn to_ffi_resource(&self) -> ID3D11Resource;
+    fn as_ffi_resource(&self) -> &ID3D11Resource;
     fn from_ffi_resource(resource: ID3D11Resource) -> Option<Self>;
 
     fn get_device(&self) -> crate::Device {
-        crate::Device(unsafe { self.to_ffi_resource().GetDevice() }.unwrap())
+        crate::Device(unsafe { self.as_ffi_resource().GetDevice() }.unwrap())
     }
 
     unsafe fn get_context(&self) -> crate::DeviceContext {
@@ -84,8 +84,8 @@ macro_rules! impl_resource {
     ($name:ident) => {
         impl_device_child!($name);
         impl $crate::resource::Resource for $name {
-            fn to_ffi_resource(&self) -> ID3D11Resource {
-                self.0.clone().into()
+            fn as_ffi_resource(&self) -> &ID3D11Resource {
+                unsafe { transmute(self) }
             }
 
             fn from_ffi_resource(resource: ID3D11Resource) -> Option<Self> {

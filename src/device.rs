@@ -227,11 +227,8 @@ impl Device {
         }
 
         let inner = wrap_option_out_result(|out| unsafe {
-            self.0.CreateRenderTargetView(
-                &resource.to_ffi_resource(),
-                desc.map(|d| d.as_ffi()),
-                out,
-            )
+            self.0
+                .CreateRenderTargetView(resource.as_ffi_resource(), desc.map(|d| d.as_ffi()), out)
         })?;
 
         Ok(RenderTargetView(inner))
@@ -243,11 +240,8 @@ impl Device {
         desc: Option<&DepthStencilViewDesc>,
     ) -> crate::Result<DepthStencilView> {
         let inner = wrap_option_out_result(|out| unsafe {
-            self.0.CreateDepthStencilView(
-                &resource.to_ffi_resource(),
-                desc.map(|d| d.as_ffi()),
-                out,
-            )
+            self.0
+                .CreateDepthStencilView(resource.as_ffi_resource(), desc.map(|d| d.as_ffi()), out)
         })?;
 
         Ok(DepthStencilView(inner))
@@ -269,7 +263,7 @@ impl Device {
 
         let inner = wrap_option_out_result(|out| unsafe {
             self.0.CreateShaderResourceView(
-                &resource.to_ffi_resource(),
+                resource.as_ffi_resource(),
                 desc.as_option().map(|d| d.as_ffi()),
                 out,
             )
@@ -285,7 +279,7 @@ impl Device {
     ) -> crate::Result<UnorderedAccessView> {
         let inner = wrap_option_out_result(|out| unsafe {
             self.0.CreateUnorderedAccessView(
-                &resource.to_ffi_resource(),
+                resource.as_ffi_resource(),
                 desc.as_option().map(|d| d.as_ffi()),
                 out,
             )

@@ -116,7 +116,7 @@ impl DeviceContext {
 
         let mapped = wrap_out_ptr(|out| unsafe {
             self.0.Map(
-                &resource.to_ffi_resource(),
+                resource.as_ffi_resource(),
                 subresource,
                 D3D11_MAP(map_type as i32),
                 flags as _,
@@ -149,7 +149,7 @@ impl DeviceContext {
 
         let mapped = wrap_out_ptr(|out| {
             self.0.Map(
-                &resource.to_ffi_resource(),
+                resource.as_ffi_resource(),
                 subresource,
                 D3D11_MAP(map_type as i32),
                 flags as _,
@@ -165,7 +165,7 @@ impl DeviceContext {
     }
 
     pub fn unmap<T: Resource + Clone>(&self, resource: &T, subresource: u32) {
-        unsafe { self.0.Unmap(&resource.to_ffi_resource(), subresource) }
+        unsafe { self.0.Unmap(resource.as_ffi_resource(), subresource) }
     }
 
     // TODO(cohae): Fix this in d3d11-sys instead
@@ -211,7 +211,7 @@ impl DeviceContext {
     pub fn copy_resource<Src: Resource, Dest: Resource>(&self, src: &Src, dst: &Dest) {
         unsafe {
             self.0
-                .CopyResource(&dst.to_ffi_resource(), &src.to_ffi_resource());
+                .CopyResource(dst.as_ffi_resource(), src.as_ffi_resource());
         }
     }
 
@@ -228,12 +228,12 @@ impl DeviceContext {
     ) {
         unsafe {
             self.0.CopySubresourceRegion(
-                &dst.to_ffi_resource(),
+                dst.as_ffi_resource(),
                 dst_subresource,
                 dst_pos.0,
                 dst_pos.1,
                 dst_pos.2,
-                &src.to_ffi_resource(),
+                src.as_ffi_resource(),
                 src_subresource,
                 src_box.map(|b| b as *const _ as *const D3D11_BOX),
             );
@@ -291,7 +291,7 @@ impl<T: Resource> Drop for SubresourceMapGuard<T> {
         unsafe {
             self.context
                 .0
-                .Unmap(&self.resource.to_ffi_resource(), self.subresource);
+                .Unmap(self.resource.as_ffi_resource(), self.subresource);
         }
     }
 }
