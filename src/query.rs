@@ -48,6 +48,41 @@ pub struct QueryDesc {
 }
 verify_ffi_struct!(QueryDesc, D3D11_QUERY_DESC);
 
+impl QueryDesc {
+    pub fn new(query: QueryType, misc_flags: u32) -> Self {
+        Self { query, misc_flags }
+    }
+
+    pub fn event() -> Self {
+        Self::new(QueryType::Event, 0)
+    }
+
+    pub fn timestamp() -> Self {
+        Self::new(QueryType::Timestamp, 0)
+    }
+
+    pub fn timestamp_disjoint() -> Self {
+        Self::new(QueryType::TimestampDisjoint, 0)
+    }
+
+    pub fn occlusion() -> Self {
+        Self::new(QueryType::Occlusion, 0)
+    }
+
+    /// # Parameters
+    /// - `hint`: If true, tells the hardware that if it is not yet sure if something is hidden or not to draw it anyway. Note that predication data cannot be returned to your application via [`DeviceContext::get_data`] when using this flag.
+    pub fn occlusion_predicate(hint: bool) -> Self {
+        Self::new(
+            QueryType::OcclusionPredicate,
+            if hint {
+                D3D11_QUERY_MISC_PREDICATEHINT.0 as u32
+            } else {
+                0
+            },
+        )
+    }
+}
+
 #[repr(i32)]
 #[derive(Clone, Debug)]
 pub enum QueryType {
