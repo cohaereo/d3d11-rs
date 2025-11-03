@@ -91,13 +91,20 @@ impl<T> OptionalParam for Option<&T> {
 /// * `$input_slice`: The input slice of Option<&Resource>.
 #[macro_export]
 macro_rules! cast_optional_resource_refs {
-    ($stack_count:expr, $input_slice:ident) => {{
-        type TempStorage =
-            smallvec::SmallVec<[Option<std::ptr::NonNull<std::ffi::c_void>>; $stack_count]>;
+    ($stack_count:expr, $input_slice:ident) => {
+        if $input_slice.len() > 1 {
+            type TempStorage =
+                smallvec::SmallVec<[Option<std::ptr::NonNull<std::ffi::c_void>>; $stack_count]>;
 
-        $input_slice
-            .into_iter()
-            .map(|res| res.as_ref().map(|b| std::mem::transmute_copy(*b)))
-            .collect::<TempStorage>()
-    }};
+            $input_slice
+                .into_iter()
+                .map(|res| res.as_ref().map(|b| std::mem::transmute_copy(*b)))
+                .collect::<TempStorage>()
+        } else {
+            let ptr: Option<std::ptr::NonNull<std::ffi::c_void>> = $input_slice
+                .get(0)
+                .and_then(|res| res.as_ref().map(|b| std::mem::transmute_copy(*b)));
+            smallvec::smallvec![ptr]
+        }
+    };
 }
