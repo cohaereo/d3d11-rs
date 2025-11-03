@@ -95,11 +95,12 @@ macro_rules! cast_optional_resource_refs {
         if $input_slice.len() > 1 {
             type TempStorage =
                 smallvec::SmallVec<[Option<std::ptr::NonNull<std::ffi::c_void>>; $stack_count]>;
-
-            $input_slice
-                .into_iter()
-                .map(|res| res.as_ref().map(|b| std::mem::transmute_copy(*b)))
-                .collect::<TempStorage>()
+            let mut temp_storage = TempStorage::with_capacity($input_slice.len());
+            for res in $input_slice.iter() {
+                let ptr = res.as_ref().map(|b| std::mem::transmute_copy(*b));
+                temp_storage.push(ptr);
+            }
+            temp_storage
         } else {
             let ptr: Option<std::ptr::NonNull<std::ffi::c_void>> = $input_slice
                 .get(0)
