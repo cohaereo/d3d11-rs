@@ -89,9 +89,31 @@ impl DeviceContext {
         }
     }
 
+    pub fn set_resource_min_lod(&self, resource: &impl Resource, min_lod: f32) {
+        unsafe {
+            self.0
+                .SetResourceMinLOD(resource.as_ffi_resource(), min_lod);
+        }
+    }
+
     pub fn flush(&self) {
         unsafe {
             self.0.Flush();
+        }
+    }
+
+    pub fn clear_state(&self) {
+        unsafe {
+            self.0.ClearState();
+        }
+    }
+
+    pub fn get_type(&self) -> DeviceContextType {
+        let ctx_type = unsafe { self.0.GetType() };
+        match ctx_type {
+            D3D11_DEVICE_CONTEXT_IMMEDIATE => DeviceContextType::Immediate,
+            D3D11_DEVICE_CONTEXT_DEFERRED => DeviceContextType::Deferred,
+            _ => unreachable!("Invalid device context type returned by driver"),
         }
     }
 
@@ -294,4 +316,10 @@ impl<T: Resource> Drop for SubresourceMapGuard<T> {
                 .Unmap(self.resource.as_ffi_resource(), self.subresource);
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DeviceContextType {
+    Immediate,
+    Deferred,
 }
