@@ -1,3 +1,5 @@
+use crate::Buffer;
+
 use super::DeviceContext;
 
 impl DeviceContext {
@@ -44,16 +46,16 @@ impl DeviceContext {
         }
     }
 
-    // pub fn draw_indexed_instanced_indirect(
-    //     &self,
-    //     buffer_for_args: &ID3D11Buffer,
-    //     aligned_byte_offset_for_args: u32,
-    // ) {
-    //     unsafe {
-    //         self.0
-    //             .DrawIndexedInstancedIndirect(buffer_for_args, aligned_byte_offset_for_args);
-    //     }
-    // }
+    pub fn draw_indexed_instanced_indirect(
+        &self,
+        buffer_for_args: &Buffer,
+        aligned_byte_offset_for_args: u32,
+    ) {
+        unsafe {
+            self.0
+                .DrawIndexedInstancedIndirect(&buffer_for_args.0, aligned_byte_offset_for_args);
+        }
+    }
 
     pub fn draw_instanced(
         &self,
@@ -72,14 +74,14 @@ impl DeviceContext {
         }
     }
 
-    // pub fn draw_instanced_indirect(
-    //     &self,
-    //     buffer_for_args: &ID3D11Buffer,
-    //     aligned_byte_offset_for_args: u32,
-    // ) {
-    //     unsafe {
-    //         self.0
-    //             .DrawInstancedIndirect(buffer_for_args, aligned_byte_offset_for_args);
-    //     }
-    // }
+    pub fn draw_instanced_indirect(
+        &self,
+        buffer_for_args: &Buffer,
+        aligned_byte_offset_for_args: u32,
+    ) {
+        unsafe {
+            self.0
+                .DrawInstancedIndirect(&buffer_for_args.0, aligned_byte_offset_for_args);
+        }
+    }
 }
