@@ -7,50 +7,46 @@
 
 pub mod fxc;
 
-pub mod blend_state;
-pub mod buffer;
-pub mod common;
-pub mod context;
-pub mod device;
-pub mod device_child;
+mod blend_state;
+mod buffer;
+mod common;
+mod context;
+mod device;
+mod device_child;
 pub mod dxgi;
-pub mod error;
-pub mod input_layout;
-pub mod query;
-pub mod rasterizer;
-pub mod resource;
-pub mod sampler;
-pub mod shader;
-pub mod texture;
+mod error;
+mod input_layout;
+mod query;
+mod rasterizer;
+mod resource;
+mod sampler;
+mod shader;
+mod texture;
 mod util;
 
-pub mod dsv;
-pub mod rtv;
-pub mod srv;
-pub mod uav;
+mod dsv;
+mod rtv;
+mod srv;
+mod uav;
 
-pub use blend_state::{Blend, BlendDesc, BlendOp, BlendState, RenderTargetBlendDesc};
-pub use buffer::{Buffer, BufferDesc};
+pub use blend_state::*;
+pub use buffer::*;
 pub use common::*;
 pub use context::*;
 pub use device::*;
 pub use device_child::*;
-// pub use dxgi::*;
-pub use dsv::{
-    DepthStencilDesc, DepthStencilOpDesc, DepthStencilState, DepthStencilView,
-    DepthStencilViewDesc, DepthWriteMask, StencilOp,
-};
-pub use error::{Error, Result};
-pub use input_layout::{InputClassification, InputElementDesc, InputLayout};
-pub use query::{Counter, Predicate, Query};
-pub use rasterizer::{CullMode, FillMode, RasterizerDesc, RasterizerState};
+pub use dsv::*;
+pub use error::*;
+pub use input_layout::*;
+pub use query::*;
+pub use rasterizer::*;
 pub use resource::*;
-pub use rtv::{RenderTargetView, RenderTargetViewDesc};
-pub use sampler::{Filter, SamplerDesc, SamplerState, TextureAddress};
+pub use rtv::*;
+pub use sampler::*;
 pub use shader::*;
-pub use srv::{ShaderResourceView, ShaderResourceViewDesc};
-pub use texture::{Texture1D, Texture1dDesc, Texture2D, Texture2dDesc, Texture3D, Texture3dDesc};
-pub use uav::{UnorderedAccessView, UnorderedAccessViewDesc};
+pub use srv::*;
+pub use texture::*;
+pub use uav::*;
 
 pub use d3d11_ffi as sys;
 pub use d3d11_ffi::Foundation::HWND;

@@ -70,7 +70,9 @@ impl QueryDesc {
     }
 
     /// # Parameters
-    /// - `hint`: If true, tells the hardware that if it is not yet sure if something is hidden or not to draw it anyway. Note that predication data cannot be returned to your application via [`DeviceContext::get_data`] when using this flag.
+    /// - `hint`: If true, tells the hardware that if it is not yet sure if something is hidden or not to draw it anyway.
+    ///
+    /// Note that predication data cannot be returned to your application via [`crate::DeviceContext::get_data`] when using this flag.
     pub fn occlusion_predicate(hint: bool) -> Self {
         Self::new(
             QueryType::OcclusionPredicate,
