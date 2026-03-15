@@ -31,6 +31,7 @@ use crate::{
 pub struct CommandList(pub(crate) ID3D11CommandList);
 impl_device_child!(CommandList);
 
+#[repr(C)]
 #[derive(Clone)]
 pub struct DeviceContext(
     pub(crate) ID3D11DeviceContext,
