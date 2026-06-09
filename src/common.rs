@@ -33,15 +33,5 @@ pub fn calc_subresource_index(mip_slice: u32, array_slice: u32, mip_levels: u32)
 }
 
 pub fn calc_mip_count(width: u32, height: u32) -> u32 {
-    let mut count = 1;
-    let mut w = width;
-    let mut h = height;
-
-    while w > 1 || h > 1 {
-        count += 1;
-        w = w.div_ceil(2);
-        h = h.div_ceil(2);
-    }
-
-    count
+    width.min(height).ilog2() + 1
 }
